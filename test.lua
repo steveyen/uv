@@ -1,4 +1,4 @@
-f = package.loadlib("lualuv.so", "foo")
+f = package.loadlib("uv_wrap.so", "foo")
 
 avg, sum = f(1,2,3)
 

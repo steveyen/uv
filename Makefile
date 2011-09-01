@@ -1,6 +1,6 @@
 LIBUV_DIR = ../libuv
 
-all: lualuv.so
+all: uv_wrap.so
 
 test:
 	lua test.lua
@@ -8,9 +8,9 @@ test:
 clean:
 	rm -f *.so *.o
 
-lualuv.so: ${LIBUV_DIR}/uv.a lualuv.o
-	$(CC) -shared -o lualuv.so lualuv.o ${LIBUV_DIR}/uv.a -llua
+uv_wrap.so: ${LIBUV_DIR}/uv.a uv_wrap.o
+	$(CC) -shared -o uv_wrap.so uv_wrap.o ${LIBUV_DIR}/uv.a -llua
 
-lualuv.o: lualuv.c
-	$(CC) -fPIC -g -c -Wall lualuv.c
+uv_wrap.o: uv_wrap.c
+	$(CC) -fPIC -g -c -Wall uv_wrap.c
 

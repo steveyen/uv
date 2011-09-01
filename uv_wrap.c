@@ -1,6 +1,12 @@
+/* -*- Mode: C; tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*- */
+
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+
+LUA_API int luaopen_uv_wrap(lua_State *L) {
+  return 0;
+}
 
 LUA_API int foo(lua_State *L) {
        int n = lua_gettop(L);    /* number of arguments */
