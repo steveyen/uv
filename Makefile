@@ -1,8 +1,13 @@
+LIBUV_DIR = ../libuv
+
 all: lualuv.so
 
-lualuv.so: uv.a lualuv.o
-	$(CC) -shared \
-          -o lualuv.so lualuv.o uv.a -llua
+clean:
+	rm -f *.so *.o
+
+lualuv.so: ${LIBUV_DIR}/uv.a lualuv.o
+	$(CC) -shared -o lualuv.so lualuv.o ${LIBUV_DIR}/uv.a -llua
 
 lualuv.o: lualuv.c
 	$(CC) -fPIC -g -c -Wall lualuv.c
+
