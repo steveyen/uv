@@ -4,8 +4,19 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
+static int doit(lua_State *L) {
+   double trouble = lua_tonumber(L, 1);
+   lua_pushnumber(L, 16.0 - trouble);
+   return 1;
+}
+
 LUA_API int luaopen_uv_wrap(lua_State *L) {
-  return 0;
+    luaL_reg reg[] = {
+        {"doit", doit},
+        {NULL, NULL}
+    };
+    luaL_register(L,"luapassing", reg);
+    return 1;
 }
 
 LUA_API int foo(lua_State *L) {
