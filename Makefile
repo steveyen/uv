@@ -2,6 +2,9 @@ LIBUV_DIR = ../libuv
 
 all: lualuv.so
 
+test:
+	lua test.lua
+
 clean:
 	rm -f *.so *.o
 
