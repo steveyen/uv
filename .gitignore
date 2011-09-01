@@ -2,4 +2,4 @@
 *.a
 *.o
 *.so
-
+uv_wrap_gen.c

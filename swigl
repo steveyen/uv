@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+src = ARGF.read
+src = src.gsub(/^#.*$/, '')
+
+print src
+print "\n"
+print "done\n"
