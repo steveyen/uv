@@ -30,7 +30,8 @@ def name_kind(curr)
       # Example: void uv_init();
       return first_parts[-1], 'function' if curr.include?('(')
 
-      return curr[-1], 'misc';
+      print "ERROR: unknown name/type for #{curr.join("><")}\n"
+      exit(-1)
   end
 end
 
