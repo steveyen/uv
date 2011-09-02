@@ -15,5 +15,6 @@ uv_wrap.o: uv_wrap.c
 	$(CC) -fPIC -g -c -Wall uv_wrap.c
 
 uv_wrap_gen.c:
-	grep -v "#include" ${LIBUV_DIR}/include/uv.h | cpp | ./swigl > uv_wrap_gen.c
+	grep -v "#include" ${LIBUV_DIR}/include/uv.h | cpp | \
+        sed -E "s,[A-Z_]+_PRIVATE_[A-Z_]+,,g" | ./swigl > uv_wrap_gen.c
 

@@ -4,7 +4,6 @@
 #
 src = ARGF.read
 src = src.gsub(/^\s*#.+$/, '')
-src = src.gsub(/\n\n+/, "\n")
 
 def name_kind(curr)
   first_parts = curr[0].split(' ').
@@ -19,7 +18,7 @@ def name_kind(curr)
       end
 
       # Example: typedef struct uv_req_s uv_req_t;
-      return curr[-1].split(' ')[-1], first_parts[0]
+      return curr[-1].split(' ')[-1], first_parts[1]
 
     when 'struct', 'union', 'enum'
       # Example: struct cmsghdr
@@ -41,7 +40,7 @@ curr = []
 parts = src.split(/([\;\{\}\(\)])/)
 parts.each do |part|
   if part
-    part = part.strip.squeeze(" \n\t")
+    part = part.squeeze(" \n\t")
     if part != ""
       if part == ";" and
          curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
@@ -70,9 +69,12 @@ parts.each do |part|
 end
 
 kinds.keys.sort.each do |k|
-  print("#{k}\n  ")
-  print(kinds[k].keys.sort.join("\n  "))
-  print("\n")
+  print("#{k}\n")
+  kind = kinds[k]
+  kind.keys.sort.each do |n|
+    print("  #{n}:\n")
+    print("    #{kind[n].map {|x| x.strip }.join('><').squeeze(" \n")}\n")
+  end
 end
 print("\n")
 
