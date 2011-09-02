@@ -1,8 +1,73 @@
 #!/usr/bin/env ruby
 
+# Poor man's SWIG just for lua.
+#
 src = ARGF.read
-src = src.gsub(/^#.*$/, '')
+src = src.gsub(/^\s*#.+$/, '')
+src = src.gsub(/\n\n+/, "\n")
 
-print src
+def name(curr)
+  n, t = name_type(curr)
+  if n.nil?
+    print "\n\nERROR: missing name in #{curr.join("><")}\n" unless n
+    exit(-1)
+  end
+
+  return n.gsub('*', '')
+end
+
+def name_type(curr)
+  first_parts = curr[0].split(' ').select {|x| x != "extern" and x != "__const" }
+
+  case first_parts[0]
+    when 'typedef'
+      if curr[-1] == ')' and
+         curr.count {|x| x == '(' } > 1
+        # Example: typedef void (*uv_close_cb)(uv_handle_t* handle);
+        return curr[curr.index('(') + 1], first_parts[0]
+      end
+
+      # Example: typedef struct uv_req_s uv_req_t;
+      return curr[-1].split(' ')[-1], first_parts[0]
+
+    when 'struct', 'union', 'enum'
+      # Example: struct cmsghdr
+      # Example: struct cmsghdr{int foo; int bar}
+      return first_parts[-1], first_parts[0]
+
+    else
+      # void uv_init();
+      return first_parts[-1], 'function' if curr.include?('(')
+
+      return curr[-1], 'misc';
+  end
+end
+
+objs = {}
+curr = []
+
+parts = src.split(/([\;\{\}\(\)])/)
+parts.each do |part|
+  if part
+    part = part.strip.squeeze(" \n\t")
+    if part != ""
+      if part == ";" and
+         curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
+        n = name(curr)
+        if objs[n]
+          print("ERROR: duplicate name: #{n} in #{curr.join('><')}, previously #{objs[n].join('><')}\n")
+        end
+
+        objs[n] = curr
+
+        curr = []
+      else
+        curr << part
+      end
+    end
+  end
+end
+
+print objs.keys.sort.join("\n")
 print "\n"
-print "done\n"
+
