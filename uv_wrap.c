@@ -15,7 +15,7 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"doit", doit},
         {NULL, NULL}
     };
-    luaL_register(L,"luapassing", reg);
+    luaL_register(L, "uv_wrap", reg);
     return 1;
 }
 
