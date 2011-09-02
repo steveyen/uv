@@ -55,7 +55,7 @@ def enum_values(curr)
   vals = curr[lhs..rhs]
   vals.each do |e|
     e.split(',').each do |v|
-      v = v.split('=')[0]
+      v = v.split('=')[0].strip
       res << v
     end
   end
