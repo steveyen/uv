@@ -10,15 +10,6 @@ static int doit(lua_State *L) {
    return 1;
 }
 
-LUA_API int luaopen_uv_wrap(lua_State *L) {
-    luaL_reg reg[] = {
-        {"doit", doit},
-        {NULL, NULL}
-    };
-    luaL_register(L, "uv_wrap", reg);
-    return 1;
-}
-
 LUA_API int foo(lua_State *L) {
        int n = lua_gettop(L);    /* number of arguments */
        lua_Number sum = 0;
