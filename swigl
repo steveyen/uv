@@ -129,7 +129,7 @@ print <<-EOF
 #include <lualib.h>
 #include <lauxlib.h>
 
-#{'#include "' + include_files.join("\n#include \"") + '"'}
+#{include_files.map {|x| "#include \"#{x}\"" }.join("\n")}
 
 EOF
 
