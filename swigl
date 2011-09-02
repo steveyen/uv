@@ -6,18 +6,9 @@ src = ARGF.read
 src = src.gsub(/^\s*#.+$/, '')
 src = src.gsub(/\n\n+/, "\n")
 
-def name(curr)
-  n, t = name_type(curr)
-  if n.nil?
-    print "\n\nERROR: missing name in #{curr.join("><")}\n" unless n
-    exit(-1)
-  end
-
-  return n.gsub('*', '')
-end
-
-def name_type(curr)
-  first_parts = curr[0].split(' ').select {|x| x != "extern" and x != "__const" }
+def name_kind(curr)
+  first_parts = curr[0].split(' ').
+                        select {|x| x != "extern" and x != "__const" }
 
   case first_parts[0]
     when 'typedef'
@@ -36,14 +27,14 @@ def name_type(curr)
       return first_parts[-1], first_parts[0]
 
     else
-      # void uv_init();
+      # Example: void uv_init();
       return first_parts[-1], 'function' if curr.include?('(')
 
       return curr[-1], 'misc';
   end
 end
 
-objs = {}
+kinds = {}
 curr = []
 
 parts = src.split(/([\;\{\}\(\)])/)
@@ -53,12 +44,21 @@ parts.each do |part|
     if part != ""
       if part == ";" and
          curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
-        n = name(curr)
-        if objs[n]
-          print("ERROR: duplicate name: #{n} in #{curr.join('><')}, previously #{objs[n].join('><')}\n")
+        n, k = name_kind(curr)
+        if n.nil? or k.nil?
+          print "\n\nERROR: missing name in #{curr.join("><")}\n"
+          exit(-1)
         end
 
-        objs[n] = curr
+        n = n.gsub('*', '')
+
+        kinds[k] ||= {}
+        if kinds[k][n]
+          print("ERROR: duplicate name: #{n}, for kind: #{k}," \
+                " in: #{curr.join('><')}, previously: #{kinds[k][n].join('><')}\n")
+        end
+
+        kinds[k][n] = curr
 
         curr = []
       else
@@ -68,6 +68,10 @@ parts.each do |part|
   end
 end
 
-print objs.keys.sort.join("\n")
-print "\n"
+kinds.keys.sort.each do |k|
+  print("#{k}\n  ")
+  print(kinds[k].keys.sort.join("\n  "))
+  print("\n")
+end
+print("\n")
 
