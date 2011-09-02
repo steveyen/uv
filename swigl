@@ -18,7 +18,7 @@ def name_kind(curr)
       if curr[-1] == ')' and
          curr.count {|x| x == '(' } > 1
         # Example: typedef void (*uv_close_cb)(uv_handle_t* handle);
-        return curr[curr.index('(') + 1], first_parts[0]
+        return curr[curr.index('(') + 1], first_parts[0], 'function'
       end
 
       # Example: typedef enum { ...} name_of_enum;
@@ -47,7 +47,7 @@ curr = []
 parts = src.split(/([\;\{\}\(\)])/)
 parts.each do |part|
   if part
-    part = part.strip.squeeze(" \n\t")
+    part = part.strip.gsub("\n", " ").squeeze(" \n\t")
     if part != ""
       if part == ";" and
          curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
@@ -84,7 +84,7 @@ if true
     kind = kinds[k]
     kind.keys.sort.each do |n|
       print("    #{n}:\n")
-      print("      #{kind[n].join('><').gsub("\n", " ").squeeze(" ")}\n")
+      print("      #{kind[n].join('><')}\n")
     end
   end
   print("\n")
