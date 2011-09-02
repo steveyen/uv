@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 
-# Poor man's SWIG just for lua.
+# Poor man's SWIG just for lua, which uses STDIN/STDOUT.
 #
-src = ARGF.read
+#   cat some.h | ./swigl some_wrap > some_wrap.c
+#
+modname = ARGV[0]
+
+src = STDIN.read
 src = src.gsub(/^\s*#.+$/, '')
 
 def name_kind(curr)
@@ -71,13 +75,17 @@ parts.each do |part|
   end
 end
 
-kinds.keys.sort.each do |k|
-  print("#{k}:\n")
-  kind = kinds[k]
-  kind.keys.sort.each do |n|
-    print("  #{n}:\n")
-    print("    #{kind[n].join('><').gsub("\n", " ").squeeze(" ")}\n")
+if true
+  kinds.keys.sort.each do |k|
+    print("#{k}:\n")
+    kind = kinds[k]
+    kind.keys.sort.each do |n|
+      print("  #{n}:\n")
+      print("    #{kind[n].join('><').gsub("\n", " ").squeeze(" ")}\n")
+    end
   end
+  print("\n")
 end
-print("\n")
+
+
 
