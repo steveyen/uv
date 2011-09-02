@@ -17,8 +17,11 @@ def name_kind(curr)
         return curr[curr.index('(') + 1], first_parts[0]
       end
 
+      # Example: typedef enum { ...} name_of_enum;
+      return curr[-1].split(' ')[-1], 'enum' if first_parts[1] == 'enum'
+
       # Example: typedef struct uv_req_s uv_req_t;
-      return curr[-1].split(' ')[-1], first_parts[1]
+      return curr[-1].split(' ')[-1], first_parts[0]
 
     when 'struct', 'union', 'enum'
       # Example: struct cmsghdr
@@ -40,7 +43,7 @@ curr = []
 parts = src.split(/([\;\{\}\(\)])/)
 parts.each do |part|
   if part
-    part = part.squeeze(" \n\t")
+    part = part.strip.squeeze(" \n\t")
     if part != ""
       if part == ";" and
          curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
@@ -69,11 +72,11 @@ parts.each do |part|
 end
 
 kinds.keys.sort.each do |k|
-  print("#{k}\n")
+  print("#{k}:\n")
   kind = kinds[k]
   kind.keys.sort.each do |n|
     print("  #{n}:\n")
-    print("    #{kind[n].map {|x| x.strip }.join('><').squeeze(" \n")}\n")
+    print("    #{kind[n].join('><').gsub("\n", " ").squeeze(" ")}\n")
   end
 end
 print("\n")
