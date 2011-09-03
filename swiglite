@@ -38,7 +38,7 @@ def name_kind(curr)
                first_parts[0..-2]
       end
 
-      print "ERROR: unknown name/type for #{curr.join("><")}\n"
+      print "\n\nERROR: unknown name/type for #{curr.join("><")}\n"
       exit(-1)
   end
 end
@@ -100,7 +100,7 @@ def parse(src)
 
           kinds[k] ||= {}
           if kinds[k][n]
-            print("ERROR: duplicate name: #{n}, for kind: #{k}," \
+            print("\n\nERROR: duplicate name: #{n}, for kind: #{k}," \
                   " in: #{curr.join('><')}," \
                   " previously: #{KINDS[k][n].join('><')}\n")
           end
