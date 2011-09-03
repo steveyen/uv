@@ -135,35 +135,53 @@ EOF
 
 # ---------------------------------------------
 
-wrap_template = ERB.new <<-EOF
+wrap_function = ERB.new(<<-'EOF', 0, "%<>")
 static int wrap_<%= name %>(lua_State *L) {
-  return 0;
+% args.each_index do |arg_i|
+%   arg = args[arg_i]
+%   arg = arg.gsub('*', ' * ').squeeze(' ').strip
+%   p = arg.split(' ')
+%   p << "arg_" + arg_i.to_s if p.length < 2 or p[-1] == '*'
+%   arg_type = p[0..-2].join(' ')
+%   arg_name = p[-1]
+    <%= arg_type %> <%= arg_name %>;
+% end
+    return 0;
 }
 EOF
 
 functions.keys.sort.each do |k|
-  name, kind, extra = name_kind(functions[k])
-  print(wrap_template.result(binding))
+  curr = functions[k]
+
+  name, kind, extra = name_kind(curr)
+
+  args_s = curr[(curr.rindex("(") + 1)..-2].join('').strip
+  args_s = "" if args_s == "void"
+  args_s = "" if args_s.include?('[]') # TODO: Array params.
+  args   = args_s.split(',')
+
+  print(wrap_function.result(binding))
 end
 
 # ---------------------------------------------
 
-entry_template = ERB.new <<-EOF
+entry_template = ERB.new(<<-'EOF', 0, "%<>")
 LUA_API int luaopen_<%= module_name %>(lua_State *L) {
     luaL_reg reg[] = {
-        <% functions.keys.sort.each do |k| %>
+% functions.keys.sort.each do |k|
         {"<%= k %>", wrap_<%= k %>},
-        <% end %>
+% end
         {NULL, NULL}
     };
     luaL_register(L, "<%= module_name %>", reg);
 
-    <% enums.keys.sort.each do |k| %>
-      <% enum_values(enums[k]).each do |v| %>
-        lua_pushinteger(L, (lua_Integer) <%= v %>);
-        lua_setfield(L, -2, "<%= v %>");
-      <% end %>
-    <% end %>
+% enums.keys.sort.each do |k|
+%   enum_values(enums[k]).each do |v|
+    lua_pushinteger(L, (lua_Integer) <%= v %>);
+    lua_setfield(L, -2, "<%= v %>");
+
+%   end
+% end
 
     return 1;
 }
