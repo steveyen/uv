@@ -8,11 +8,22 @@
 require 'rubygems'
 require 'erb'
 
-module_name   = ARGV[0]
-include_files = ARGV[1..-1]
+$skip = {}
+
+module_name   = $module_name   = ARGV[0]
+include_files = $include_files = ARGV[1..-1]
+
+load($module_name + ".swigl") if File.exists?($module_name + ".swigl")
 
 src = STDIN.read
 src = src.gsub(/^\s*#.+$/, '')
+
+MAP_C2LUA = {
+  'int'      => 'int',
+  'long'     => 'long',
+  'double'   => 'number',
+  'char *'   => 'string'
+}
 
 # ---------------------------------------------
 
@@ -137,13 +148,41 @@ EOF
 
 def arg_parts(arg, arg_i)
   p = arg.gsub('*', ' * ').squeeze(' ').strip.split(' ')
-  p << "arg_#{arg_i}" if p.length < 2 or p[-1] == '*'
-  arg_type = p[0..-2]
+  q = p.select {|x| x != 'struct' }
+  p << "arg_#{arg_i}" if q.length < 2 or q[-1] == '*'
+  arg_type = p[0..-2].select {|x| x != 'const' }
   arg_name = p[-1]
   return arg_type, arg_name
 end
 
-def arg_emit(arg_type, arg_name)
+def arg_lua2c(arg_type, arg_name, arg_i)
+  t = arg_type.select {|x| x != 'signed' and
+                           x != 'unsigned' }.join(' ')
+  basic_type, check = MAP_C2LUA[t]
+  if basic_type
+    <<-EOF
+    #{arg_name} =
+        (#{arg_type.join(' ')}) luaL_check#{basic_type}(L, #{arg_i + 1});
+EOF
+  else
+    short_t = t.gsub('*', 'ptr').
+                gsub('struct ', '').
+                squeeze(' ').strip.gsub(' ', '_')
+    <<-EOF
+    #{arg_type.join(' ')}* #{arg_name}_x =
+        luaL_checkudata(L, #{arg_i + 1}, "#{$module_name}.#{short_t}");
+    #{arg_name} = *#{arg_name}_x;
+EOF
+  end
+end
+
+def args_names(args)
+  arg_i = 0
+  args.map do |arg|
+    arg_type, arg_name = arg_parts(arg, arg_i)
+    arg_i = arg_i + 1
+    arg_name
+  end
 end
 
 wrap_function = ERB.new(<<-'EOF', 0, "%<>")
@@ -151,22 +190,28 @@ static int wrap_<%= name %>(lua_State *L) {
 % args.each_index do |arg_i|
 %   arg_type, arg_name = arg_parts(args[arg_i], arg_i)
     <%= arg_type.join(' ') %> <%= arg_name %>;
+    <%= arg_lua2c(arg_type, arg_name, arg_i) %>
+% end
+% unless skip
+    <%= name %>(<%= args_names(args).join(', ') %>);
 % end
     return 0;
 }
 EOF
 
 functions.keys.sort.each do |k|
+  skip = false
+
   curr = functions[k]
 
   name, kind, extra = name_kind(curr)
 
   args_s = curr[(curr.rindex("(") + 1)..-2].join('').strip
   args_s = "" if args_s == "void"
-  args_s = "" if args_s.include?('[]') # TODO: Array params.
+  args_s, skip = "", true if args_s.include?('[]') # TODO: Array params.
   args   = args_s.split(',')
 
-  print(wrap_function.result(binding))
+  print(wrap_function.result(binding)) unless $skip[name]
 end
 
 # ---------------------------------------------
@@ -175,7 +220,9 @@ entry_template = ERB.new(<<-'EOF', 0, "%<>")
 LUA_API int luaopen_<%= module_name %>(lua_State *L) {
     luaL_reg reg[] = {
 % functions.keys.sort.each do |k|
+%   unless $skip[k]
         {"<%= k %>", wrap_<%= k %>},
+%   end
 % end
         {NULL, NULL}
     };
