@@ -124,11 +124,11 @@ static int wrap_<%= name %>(lua_State *L) {
 EOF
 
 FUNCTIONS.keys.sort.each do |k|
-  curr = FUNCTIONS[k]
+  decl = FUNCTIONS[k]
 
-  name, kind, return_type = name_kind(curr)
+  name, kind, return_type = parse_decl(decl)
 
-  args_s = curr[(curr.rindex("(") + 1)..-2].join('').strip
+  args_s = decl[(decl.rindex("(") + 1)..-2].join('').strip
   args_s = "" if args_s == "void"
   args   = args_s.split(',')
 

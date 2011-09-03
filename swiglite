@@ -8,7 +8,7 @@
 #
 def parse(src)
   kinds = {}
-  curr  = []
+  decl  = []
   parts = src.split(/([\;\{\}\(\)])/)
 
   parts.each do |part|
@@ -16,10 +16,10 @@ def parse(src)
       part = part.strip.gsub("\n", " ").squeeze(" \n\t")
       if part != ""
         if part == ";" and
-           curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
-          n, k = name_kind(curr)
+           decl.count {|x| x == "{" } == decl.count {|x| x == "}" }
+          n, k = parse_decl(decl)
           if n.nil? or k.nil?
-            print "\n\nERROR: missing name in #{curr.join("><")}\n"
+            print "\n\nERROR: missing name in #{decl.join("><")}\n"
             exit(-1)
           end
 
@@ -28,15 +28,15 @@ def parse(src)
           kinds[k] ||= {}
           if kinds[k][n]
             print("\n\nERROR: duplicate name: #{n}, for kind: #{k}," \
-                  " in: #{curr.join('><')}," \
+                  " in: #{decl.join('><')}," \
                   " previously: #{KINDS[k][n].join('><')}\n")
           end
 
-          kinds[k][n] = curr
+          kinds[k][n] = decl
 
-          curr = []
+          decl = []
         else
-          curr << part
+          decl << part
         end
       end
     end
@@ -45,23 +45,23 @@ def parse(src)
   return kinds
 end
 
-def name_kind(curr)
-  first_parts = curr[0].split(' ').
+def parse_decl(decl) # Parse one declaration.
+  first_parts = decl[0].split(' ').
                         select {|x| x != "extern" and
                                     x != "__const" }
   case first_parts[0]
     when 'typedef'
-      if curr[-1] == ')' and
-         curr.count {|x| x == '(' } > 1
+      if decl[-1] == ')' and
+         decl.count {|x| x == '(' } > 1
         # Example: typedef void (*uv_close_cb)(uv_handle_t* handle);
-        return curr[curr.index('(') + 1], first_parts[0], 'function'
+        return decl[decl.index('(') + 1], first_parts[0], 'function'
       end
 
       # Example: typedef enum { ...} name_of_enum;
-      return curr[-1].split(' ')[-1], 'enum' if first_parts[1] == 'enum'
+      return decl[-1].split(' ')[-1], 'enum' if first_parts[1] == 'enum'
 
       # Example: typedef struct uv_req_s uv_req_t;
-      return curr[-1].split(' ')[-1], first_parts[0]
+      return decl[-1].split(' ')[-1], first_parts[0]
 
     when 'struct', 'union', 'enum'
       # Example: struct cmsghdr
@@ -69,22 +69,22 @@ def name_kind(curr)
       return first_parts[-1], first_parts[0]
 
     else
-      if curr.include?('(')
+      if decl.include?('(')
         # Example: void uv_init();
         return first_parts[-1], 'function',
                first_parts[0..-2]
       end
 
-      print "\n\nERROR: unknown name/type for #{curr.join("><")}\n"
+      print "\n\nERROR: unknown name/type for #{decl.join("><")}\n"
       exit(-1)
   end
 end
 
-def enum_values(curr)
+def enum_values(decl)
   res = []
-  lhs = curr.index('{') + 1
-  rhs = curr.index('}') - 1
-  vals = curr[lhs..rhs]
+  lhs = decl.index('{') + 1
+  rhs = decl.index('}') - 1
+  vals = decl[lhs..rhs]
   vals.each do |e|
     e.split(',').each do |v|
       v = v.split('=')[0].strip
