@@ -4,7 +4,7 @@ LIBUV_DIR = ../libuv
 
 CFLAGS = -I${LIBUV_DIR}/include -g
 
-ifeq (Darwin,$(uname_S))
+ifeq (Darwin, $(uname_S))
 LINKFLAGS+=-framework CoreServices
 endif
 

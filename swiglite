@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-# Poor man's lite SWIG parser for C headers.  Please use a
-# language-specific ./swiglite-LANG, which uses this code.
+# Poor man's lite "SWIG" parser for C headers.  Please use a
+# language-specific ./swiglite-${YOUR_LANG}, which uses this code.
 #
-# It handles only the simplest C declarations.  Embedded ";{}" chars
+# This handles only the simplest C declarations.  Embedded ";{}" chars
 # in strings, for example, are just one of many unhandled limitations.
 #
-# license   : Apache 2.0
-# copyright : Couchbase, Inc., 2011.
+# License   : Apache 2.0
+# Copyright : Steve Yen, Inc., 2011.
 #
 def parse(src)
   kinds = {}
