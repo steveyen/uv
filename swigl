@@ -172,7 +172,7 @@ EOF
                 gsub('const ', '').
                 squeeze(' ').strip.gsub(' ', '_')
     <<-EOF
-    #{arg_type.join(' ')}* #{arg_name}_x =
+    #{arg_type.join(' ')} *#{arg_name}_x =
         luaL_checkudata(L, #{arg_i + 1}, "#{$module_name}.#{short_t}");
     #{arg_name} = *#{arg_name}_x;
 EOF
