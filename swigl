@@ -19,10 +19,11 @@ src = STDIN.read
 src = src.gsub(/^\s*#.+$/, '')
 
 MAP_C2LUA = {
-  'int'    => 'int',
-  'long'   => 'long',
-  'double' => 'number',
-  'char *' => 'string'
+  # [ luaL_check$VAL, lua_push$VAL ]
+  'int'    => ['int', 'integer'],
+  'long'   => ['long', 'integer'],
+  'double' => ['number', 'number'],
+  'char *' => ['string', 'string']
 }
 
 # ---------------------------------------------
@@ -163,11 +164,11 @@ end
 def arg_lua2c(arg_type, arg_name, arg_i)
   t = arg_type.select {|x| x != 'signed' and
                            x != 'unsigned' }.join(' ')
-  basic_type, check = MAP_C2LUA[t]
-  if basic_type
+  check_val, push_val = MAP_C2LUA[t]
+  if check_val
     <<-EOF
 #{arg_name} =
-        (#{arg_type.join(' ')}) luaL_check#{basic_type}(L, #{arg_i + 1});
+        (#{arg_type.join(' ')}) luaL_check#{check_val}(L, #{arg_i + 1});
 EOF
   else
     short_t = t.gsub('*', 'ptr').
@@ -202,9 +203,10 @@ static int wrap_<%= name %>(lua_State *L) {
     <%= name %>(<%= args_names(args).join(', ') %>);
     return 0;
 % else
-    <%= return_type.select {|x| x != 'const' }.join(' ').
-                    gsub('*', ' * ').squeeze(' ').strip %> res =
-      <%= name %>(<%= args_names(args).join(', ') %>);
+%   return_s = return_type.join(' ').
+%                          gsub('*', ' * ').squeeze(' ').strip
+    <%= return_s %> res =
+        <%= name %>(<%= args_names(args).join(', ') %>);
     return 0;
 % end
 }
