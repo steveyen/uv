@@ -12,7 +12,6 @@ def name_kind(curr)
   first_parts = curr[0].split(' ').
                         select {|x| x != "extern" and
                                     x != "__const" }
-
   case first_parts[0]
     when 'typedef'
       if curr[-1] == ')' and
@@ -55,7 +54,7 @@ def enum_values(curr)
       res << v
     end
   end
-  res
+  return res
 end
 
 def arg_parts(arg, arg_i)
@@ -82,10 +81,9 @@ end
 
 def parse(src)
   kinds = {}
-
-  curr = []
-
+  curr  = []
   parts = src.split(/([\;\{\}\(\)])/)
+
   parts.each do |part|
     if part
       part = part.strip.gsub("\n", " ").squeeze(" \n\t")
