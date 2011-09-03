@@ -1,13 +1,50 @@
 #!/usr/bin/env ruby
 
-# Poor man's lite SWIG.
-#
-# Please use a language-specific ./swiglite-LANG, which will use
-# this helper code.  The code parses a generic C header file.
+# Poor man's lite SWIG.  Please use a language-specific
+# ./swiglite-LANG, which will use this C header parsing code.
 #
 # license   : Apache 2.0
 # copyright : Couchbase, Inc., 2011.
 #
+def parse(src)
+  kinds = {}
+  curr  = []
+  parts = src.split(/([\;\{\}\(\)])/)
+
+  parts.each do |part|
+    if part
+      part = part.strip.gsub("\n", " ").squeeze(" \n\t")
+      if part != ""
+        if part == ";" and
+           curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
+          n, k = name_kind(curr)
+          if n.nil? or k.nil?
+            print "\n\nERROR: missing name in #{curr.join("><")}\n"
+            exit(-1)
+          end
+
+          n = n.gsub('*', '')
+
+          kinds[k] ||= {}
+          if kinds[k][n]
+            print("\n\nERROR: duplicate name: #{n}, for kind: #{k}," \
+                  " in: #{curr.join('><')}," \
+                  " previously: #{KINDS[k][n].join('><')}\n")
+          end
+
+          kinds[k][n] = curr
+
+          curr = []
+        else
+          curr << part
+        end
+      end
+    end
+  end
+
+  return kinds
+end
+
 def name_kind(curr)
   first_parts = curr[0].split(' ').
                         select {|x| x != "extern" and
@@ -65,7 +102,7 @@ def arg_parts(arg, arg_i)
   p << "arg_#{arg_i}" if q.length < 2
   arg_type = p[0..-2].select {|x| x != 'const' }
   arg_name = p[-1]
-  return arg_type, arg_name
+  return arg_type, arg_name # Ex: 'char *', 'name'.
 end
 
 def args_names(args)
@@ -74,47 +111,6 @@ def args_names(args)
     arg_type, arg_name = arg_parts(arg, arg_i)
     arg_i = arg_i + 1
     arg_name
-  end
-end
-
-# ---------------------------------------------
-
-def parse(src)
-  kinds = {}
-  curr  = []
-  parts = src.split(/([\;\{\}\(\)])/)
-
-  parts.each do |part|
-    if part
-      part = part.strip.gsub("\n", " ").squeeze(" \n\t")
-      if part != ""
-        if part == ";" and
-           curr.count {|x| x == "{" } == curr.count {|x| x == "}" }
-          n, k = name_kind(curr)
-          if n.nil? or k.nil?
-            print "\n\nERROR: missing name in #{curr.join("><")}\n"
-            exit(-1)
-          end
-
-          n = n.gsub('*', '')
-
-          kinds[k] ||= {}
-          if kinds[k][n]
-            print("\n\nERROR: duplicate name: #{n}, for kind: #{k}," \
-                  " in: #{curr.join('><')}," \
-                  " previously: #{KINDS[k][n].join('><')}\n")
-          end
-
-          kinds[k][n] = curr
-
-          curr = []
-        else
-          curr << part
-        end
-      end
-    end
-  end
-
-  return kinds
+  end # Ex: ['name', 'length']
 end
 
