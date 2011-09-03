@@ -3,7 +3,9 @@
 # Poor man's lite SWIG just for lua, which uses STDIN and STDOUT.
 #
 #   ./swiglite-lua <module_name> [opt.h opt2.h ...]
-#   cat some.h | ./swiglite-lua some_wrap some.h > some_wrap.c
+#
+#   grep -v "#include" some.h | cpp | \
+#     ./swiglite-lua some_wrap some.h > some_wrap.c
 #
 # license   : Apache 2.0
 # copyright : Couchbase, Inc., 2011.
