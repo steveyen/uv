@@ -135,16 +135,22 @@ EOF
 
 # ---------------------------------------------
 
+def arg_parts(arg, arg_i)
+  p = arg.gsub('*', ' * ').squeeze(' ').strip.split(' ')
+  p << "arg_#{arg_i}" if p.length < 2 or p[-1] == '*'
+  arg_type = p[0..-2]
+  arg_name = p[-1]
+  return arg_type, arg_name
+end
+
+def arg_emit(arg_type, arg_name)
+end
+
 wrap_function = ERB.new(<<-'EOF', 0, "%<>")
 static int wrap_<%= name %>(lua_State *L) {
 % args.each_index do |arg_i|
-%   arg = args[arg_i]
-%   arg = arg.gsub('*', ' * ').squeeze(' ').strip
-%   p = arg.split(' ')
-%   p << "arg_" + arg_i.to_s if p.length < 2 or p[-1] == '*'
-%   arg_type = p[0..-2].join(' ')
-%   arg_name = p[-1]
-    <%= arg_type %> <%= arg_name %>;
+%   arg_type, arg_name = arg_parts(args[arg_i], arg_i)
+    <%= arg_type.join(' ') %> <%= arg_name %>;
 % end
     return 0;
 }
