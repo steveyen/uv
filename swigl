@@ -148,7 +148,7 @@ EOF
 
 def arg_parts(arg, arg_i)
   p = arg.gsub('*', ' * ').squeeze(' ').strip.split(' ')
-  q = p.select {|x| x != 'struct' }
+  q = p.select {|x| x != 'struct' and x != 'const' }
   p << "arg_#{arg_i}" if q.length < 2 or q[-1] == '*'
   arg_type = p[0..-2].select {|x| x != 'const' }
   arg_name = p[-1]
@@ -192,23 +192,18 @@ static int wrap_<%= name %>(lua_State *L) {
     <%= arg_type.join(' ') %> <%= arg_name %>;
     <%= arg_lua2c(arg_type, arg_name, arg_i) %>
 % end
-% unless skip
     <%= name %>(<%= args_names(args).join(', ') %>);
-% end
     return 0;
 }
 EOF
 
 functions.keys.sort.each do |k|
-  skip = false
-
   curr = functions[k]
 
   name, kind, extra = name_kind(curr)
 
   args_s = curr[(curr.rindex("(") + 1)..-2].join('').strip
   args_s = "" if args_s == "void"
-  args_s, skip = "", true if args_s.include?('[]') # TODO: Array params.
   args   = args_s.split(',')
 
   print(wrap_function.result(binding)) unless $skip[name]
