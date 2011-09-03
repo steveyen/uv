@@ -148,8 +148,10 @@ EOF
 
 def arg_parts(arg, arg_i)
   p = arg.gsub('*', ' * ').squeeze(' ').strip.split(' ')
-  q = p.select {|x| x != 'struct' and x != 'const' }
-  p << "arg_#{arg_i}" if q.length < 2 or q[-1] == '*'
+  q = p.select {|x| x != 'struct' and
+                    x != 'const' and
+                    x != '*' }
+  p << "arg_#{arg_i}" if q.length < 2
   arg_type = p[0..-2].select {|x| x != 'const' }
   arg_name = p[-1]
   return arg_type, arg_name
@@ -167,6 +169,7 @@ EOF
   else
     short_t = t.gsub('*', 'ptr').
                 gsub('struct ', '').
+                gsub('const ', '').
                 squeeze(' ').strip.gsub(' ', '_')
     <<-EOF
     #{arg_type.join(' ')}* #{arg_name}_x =
