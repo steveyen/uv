@@ -59,6 +59,21 @@ def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
   return type_name, check_val, push_val
 end
 
+def arg_from_lua(arg_type, arg_name, arg_i)
+  i = arg_i + 1
+  type_name, check_val, push_val = map_type(arg_type)
+  if check_val
+    "#{arg_name} = (#{arg_type.join(' ')})" +
+      " luaL_check#{check_val}(L, #{i});\n"
+  else
+    <<-EOF
+#{arg_type.join(' ')} *#{arg_name}_p =
+        luaL_checkudata(L, #{i}, "#{$module_name}.#{type_name}");
+    #{arg_name} = *#{arg_name}_p;
+EOF
+  end
+end
+
 # ---------------------------------------------
 
 print <<-EOF
@@ -83,22 +98,6 @@ if true
     end
   end
   print("\n*/\n\n")
-end
-
-# ---------------------------------------------
-
-def arg_from_lua(arg_type, arg_name, arg_i)
-  i = arg_i + 1
-  type_name, check_val, push_val = map_type(arg_type)
-  if check_val
-    "#{arg_name} = (#{arg_type.join(' ')}) luaL_check#{check_val}(L, #{i});\n"
-  else
-    <<-EOF
-#{arg_type.join(' ')} *#{arg_name}_p =
-        luaL_checkudata(L, #{i}, "#{$module_name}.#{type_name}");
-    #{arg_name} = *#{arg_name}_p;
-EOF
-  end
 end
 
 # ---------------------------------------------
