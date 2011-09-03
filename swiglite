@@ -80,7 +80,7 @@ def parse_decl(decl) # Parse one declaration.
   end
 end
 
-def enum_values(decl)
+def parse_enum_values(decl) # Returns the values in an enum.
   res = []
   lhs = decl.index('{') + 1
   rhs = decl.index('}') - 1
@@ -91,7 +91,7 @@ def enum_values(decl)
       res << v
     end
   end
-  return res
+  return res # Example: ['OK', 'CLIENT_ERR', 'SERVER_ERR'].
 end
 
 def arg_parts(arg, arg_i)
@@ -102,7 +102,7 @@ def arg_parts(arg, arg_i)
   p << "arg_#{arg_i}" if q.length < 2
   arg_type = p[0..-2].select {|x| x != 'const' }
   arg_name = p[-1]
-  return arg_type, arg_name # Ex: 'char *', 'name'.
+  return arg_type, arg_name # Example: 'char *', 'name'.
 end
 
 def args_names(args)
@@ -111,6 +111,6 @@ def args_names(args)
     arg_type, arg_name = arg_parts(arg, arg_i)
     arg_i = arg_i + 1
     arg_name
-  end # Ex: ['name', 'length']
+  end # Example: ['buf', 'length', 'offset']
 end
 

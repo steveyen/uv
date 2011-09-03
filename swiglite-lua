@@ -150,7 +150,7 @@ LUA_API int luaopen_<%= $module_name %>(lua_State *L) {
     luaL_register(L, "<%= $module_name %>", reg);
 
 % ENUMS.keys.sort.each do |k|
-%   enum_values(ENUMS[k]).each do |v|
+%   parse_enum_values(ENUMS[k]).each do |v|
     lua_pushinteger(L, (lua_Integer) <%= v %>);
     lua_setfield(L, -2, "<%= v %>");
 
