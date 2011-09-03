@@ -24,4 +24,4 @@ uv_wrap.so: ${LIBUV_DIR}/uv.a uv_wrap.o uv_wrap_gen.o
 uv_wrap_gen.c:
 	grep -v "#include" ${LIBUV_DIR}/include/uv.h | cpp | \
         sed -E "s,[A-Z_]+_PRIVATE_[A-Z_]+,,g" | \
-            ./swigl uv_wrap uv.h > uv_wrap_gen.c
+            ./swiglite uv_wrap uv.h > uv_wrap_gen.c

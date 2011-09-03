@@ -29,7 +29,9 @@ MAP_C2LUA_EX = {
 
 # User's module-specific specializations loaded here.
 #
-load($module_name + ".swigl") if File.exists?($module_name + ".swigl")
+if File.exists?($module_name + ".swiglite")
+  load($module_name + ".swiglite")
+end
 
 # ---------------------------------------------
 
