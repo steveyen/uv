@@ -8,12 +8,10 @@
 require 'rubygems'
 require 'erb'
 
-$skip = {}
+SKIP = {}
 
 module_name   = $module_name   = ARGV[0]
 include_files = $include_files = ARGV[1..-1]
-
-load($module_name + ".swigl") if File.exists?($module_name + ".swigl")
 
 src = STDIN.read
 src = src.gsub(/^\s*#.+$/, '')
@@ -25,6 +23,13 @@ MAP_C2LUA = {
   'double' => ['number', 'number'],
   'char *' => ['string', 'string']
 }
+
+MAP_C2LUA_EX = {
+}
+
+# User's module-specific specializations loaded here.
+#
+load($module_name + ".swigl") if File.exists?($module_name + ".swigl")
 
 # ---------------------------------------------
 
@@ -232,7 +237,7 @@ functions.keys.sort.each do |k|
   args_s = "" if args_s == "void"
   args   = args_s.split(',')
 
-  print(wrap_function.result(binding)) unless $skip[name]
+  print(wrap_function.result(binding)) unless SKIP[name]
 end
 
 # ---------------------------------------------
@@ -241,7 +246,7 @@ entry_template = ERB.new(<<-'EOF', 0, "%<>")
 LUA_API int luaopen_<%= module_name %>(lua_State *L) {
     luaL_reg reg[] = {
 % functions.keys.sort.each do |k|
-%   unless $skip[k]
+%   unless SKIP[k]
         {"<%= k %>", wrap_<%= k %>},
 %   end
 % end
