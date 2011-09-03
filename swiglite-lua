@@ -124,8 +124,18 @@ static int wrap_<%= name %>(lua_State *L) {
 %   type_name, check_val, push_val = map_type(return_type)
 %   if push_val
     lua_push<%= push_val %>(L, res);
-%   end
     return 1;
+%   else
+    <%= return_s %> *res_ud =
+        lua_newuserdata(L, sizeof(<%= return_s %>));
+    if (res_ud != NULL) {
+        *res_ud = res;
+        luaL_getmetatable(L, "<%= $module_name %>.<%= type_name %>");
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+    return 0;
+%   end
 % end
 }
 EOF
