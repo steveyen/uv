@@ -33,6 +33,24 @@ load($module_name + ".swigl") if File.exists?($module_name + ".swigl")
 
 # ---------------------------------------------
 
+def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
+  type_key = c_type.join(' ').
+                    gsub('unsigned ', '').
+                    gsub('signed ', '').
+                    squeeze(' ').strip
+
+  check_val, push_val = MAP_C2LUA_EX[type_key] || MAP_C2LUA[type_key]
+
+  type_name = type_key.gsub('*', 'ptr').
+                       gsub('struct ', '').
+                       gsub('const ', '').
+                       gsub(' ', '_')
+
+  return type_name, check_val, push_val
+end
+
+# ---------------------------------------------
+
 def name_kind(curr)
   first_parts = curr[0].split(' ').
                         select {|x| x != "extern" and x != "__const" }
@@ -155,22 +173,6 @@ EOF
 
 # ---------------------------------------------
 
-def map_type(c_type)
-  type_key = c_type.join(' ').
-                    gsub('unsigned ', '').
-                    gsub('signed ', '').
-                    squeeze(' ').strip
-
-  check_val, push_val = MAP_C2LUA[type_key]
-
-  type_name = type_key.gsub('*', 'ptr').
-                       gsub('struct ', '').
-                       gsub('const ', '').
-                       gsub(' ', '_')
-
-  return type_name, check_val, push_val
-end
-
 def arg_parts(arg, arg_i)
   p = arg.gsub('*', ' * ').squeeze(' ').strip.split(' ')
   q = p.select {|x| x != 'struct' and
@@ -183,16 +185,14 @@ def arg_parts(arg, arg_i)
 end
 
 def arg_lua2c(arg_type, arg_name, arg_i)
+  i = arg_i + 1
   type_name, check_val, push_val = map_type(arg_type)
   if check_val
-    <<-EOF
-#{arg_name} =
-        (#{arg_type.join(' ')}) luaL_check#{check_val}(L, #{arg_i + 1});
-EOF
+    "#{arg_name} = (#{arg_type.join(' ')}) luaL_check#{check_val}(L, #{i});\n"
   else
     <<-EOF
 #{arg_type.join(' ')} *#{arg_name}_p =
-        luaL_checkudata(L, #{arg_i + 1}, "#{$module_name}.#{type_name}");
+        luaL_checkudata(L, #{i}, "#{$module_name}.#{type_name}");
     #{arg_name} = *#{arg_name}_p;
 EOF
   end
