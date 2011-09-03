@@ -122,7 +122,10 @@ static int wrap_<%= name %>(lua_State *L) {
     <%= return_s %> res =
         <%= name %>(<%= args_names(args).join(', ') %>);
 %   type_name, check_val, push_val = map_type(return_type)
-    return 0;
+%   if push_val
+    lua_push<%= push_val %>(L, res);
+%   end
+    return 1;
 % end
 }
 EOF
