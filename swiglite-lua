@@ -137,7 +137,7 @@ end
 
 # ---------------------------------------------
 
-entrypoint_template = ERB.new(<<-'EOF', 0, "%<>")
+print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 LUA_API int luaopen_<%= $module_name %>(lua_State *L) {
     luaL_reg reg[] = {
 % FUNCTIONS.keys.sort.each do |k|
@@ -156,9 +156,6 @@ LUA_API int luaopen_<%= $module_name %>(lua_State *L) {
 
 %   end
 % end
-
     return 1;
 }
 EOF
-
-print(entrypoint_template.result(binding))
