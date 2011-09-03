@@ -19,10 +19,10 @@ src = STDIN.read
 src = src.gsub(/^\s*#.+$/, '')
 
 MAP_C2LUA = {
-  'int'      => 'int',
-  'long'     => 'long',
-  'double'   => 'number',
-  'char *'   => 'string'
+  'int'    => 'int',
+  'long'   => 'long',
+  'double' => 'number',
+  'char *' => 'string'
 }
 
 # ---------------------------------------------
@@ -51,8 +51,11 @@ def name_kind(curr)
       return first_parts[-1], first_parts[0]
 
     else
-      # Example: void uv_init();
-      return first_parts[-1], 'function' if curr.include?('(')
+      if curr.include?('(')
+        # Example: void uv_init();
+        return first_parts[-1], 'function',
+               first_parts[0..-2]
+      end
 
       print "ERROR: unknown name/type for #{curr.join("><")}\n"
       exit(-1)
@@ -163,7 +166,7 @@ def arg_lua2c(arg_type, arg_name, arg_i)
   basic_type, check = MAP_C2LUA[t]
   if basic_type
     <<-EOF
-    #{arg_name} =
+#{arg_name} =
         (#{arg_type.join(' ')}) luaL_check#{basic_type}(L, #{arg_i + 1});
 EOF
   else
@@ -172,9 +175,9 @@ EOF
                 gsub('const ', '').
                 squeeze(' ').strip.gsub(' ', '_')
     <<-EOF
-    #{arg_type.join(' ')} *#{arg_name}_x =
+#{arg_type.join(' ')} *#{arg_name}_p =
         luaL_checkudata(L, #{arg_i + 1}, "#{$module_name}.#{short_t}");
-    #{arg_name} = *#{arg_name}_x;
+    #{arg_name} = *#{arg_name}_p;
 EOF
   end
 end
@@ -195,15 +198,22 @@ static int wrap_<%= name %>(lua_State *L) {
     <%= arg_type.join(' ') %> <%= arg_name %>;
     <%= arg_lua2c(arg_type, arg_name, arg_i) %>
 % end
+% if return_type.include?('void')
     <%= name %>(<%= args_names(args).join(', ') %>);
     return 0;
+% else
+    <%= return_type.select {|x| x != 'const' }.join(' ').
+                    gsub('*', ' * ').squeeze(' ').strip %> res =
+      <%= name %>(<%= args_names(args).join(', ') %>);
+    return 0;
+% end
 }
 EOF
 
 functions.keys.sort.each do |k|
   curr = functions[k]
 
-  name, kind, extra = name_kind(curr)
+  name, kind, return_type = name_kind(curr)
 
   args_s = curr[(curr.rindex("(") + 1)..-2].join('').strip
   args_s = "" if args_s == "void"
