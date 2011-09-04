@@ -1,4 +1,3 @@
-SKIP['uv_hrtime'] = true
 SKIP['uv_udp_send'] = true
 SKIP['uv_udp_send6'] = true
 SKIP['uv_write'] = true
