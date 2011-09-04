@@ -9,8 +9,7 @@
 # License   : Apache 2.0
 # Copyright : Steve Yen, Inc., 2011.
 #
-def parse(src)
-  kinds = {}
+def parse(src, kinds)
   decl  = []
   parts = src.split(/([\;\{\}\(\)])/)
 

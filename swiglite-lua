@@ -37,15 +37,18 @@ $include_files = ARGV[1..-1]
 $src = STDIN.read
 $src = $src.gsub(/^\s*#.+$/, '')
 
+KINDS = {}
+
 # User's module-specific specializations loaded here.
 #
 [ ".swiglite", ".swiglite-lua" ].each do |suffix|
   load($module_name + suffix) if File.exists?($module_name + suffix)
 end
 
-KINDS     = parse($src)
-ENUMS     = KINDS['enum']
-FUNCTIONS = KINDS['function']
+parse($src, KINDS)
+
+ENUMS     = KINDS['enum'] || {}
+FUNCTIONS = KINDS['function'] || {}
 
 # ---------------------------------------------
 
