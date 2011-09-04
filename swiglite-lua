@@ -57,6 +57,10 @@ def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
 
   check_val, push_val = MAP_TYPE[type_key]
 
+  if check_val.nil? and ENUMS[type_key]
+    check_val, push_val = MAP_TYPE['int'] # Treat enum as int.
+  end
+
   type_name = type_key.gsub('*', ' * ').
                        gsub('*', 'ptr').
                        gsub('struct ', '').
