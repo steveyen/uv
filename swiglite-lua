@@ -39,6 +39,8 @@ $src = $src.gsub(/^\s*#.+$/, '')
 
 KINDS = {}
 
+ALLOCATORS = []
+
 # User's module-specific specializations loaded here.
 #
 [ ".swiglite", ".swiglite-lua" ].each do |suffix|
@@ -168,12 +170,21 @@ end
 
 # ---------------------------------------------
 
-TYPEDEFS.keys.sort.each do |k|
+ALLOCATORS.sort.each do |k|
   decl = TYPEDEFS[k]
 
   name, kind, sub_kind = parse_decl(decl)
   if sub_kind != 'function'
      print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
+static int alloc_<%= name %>(lua_State *L) {
+    <%= name %> *ud = lua_newuserdata(L, sizeof(*ud));
+    if (ud != NULL) {
+        luaL_newmetatable(L, "<%= $module_name %>.<%= name %>");
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+    return 0;
+}
 EOF
   end
 end
