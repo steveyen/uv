@@ -23,11 +23,12 @@ SKIP = {}
 
 MAP_TYPE = {
   # [ luaL_check$VAL, lua_push$VAL ]
-  'int'    => ['int', 'integer'],
-  'long'   => ['long', 'integer'],
-  'size_t' => ['long', 'integer'],
-  'double' => ['number', 'number'],
-  'char *' => ['string', 'string']
+  'int'     => ['int', 'integer'],
+  'long'    => ['long', 'integer'],
+  'int64_t' => ['long', 'integer'], # TODO: Revisit int64_t.
+  'size_t'  => ['long', 'integer'],
+  'double'  => ['number', 'number'],
+  'char *'  => ['string', 'string']
 }
 
 $module_name   = ARGV[0]
