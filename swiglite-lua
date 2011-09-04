@@ -178,12 +178,28 @@ ALLOCATORS.sort.each do |type|
                 gsub(' ', '_')
 
   print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-static int alloc_<%= type_s %>(lua_State *L) {
-    <%= type %> * *p =
+static int alloc_<%= type_s %>_ptr(lua_State *L) {
+    <%= type %> * *pp =
         lua_newuserdata(L, sizeof(<%= type %> *) + sizeof(<%= type %>));
-    if (p != NULL) {
-        *p = (<%= type %> *) &p[1];
+    if (pp != NULL) {
+        *pp = (<%= type %> *) &pp[1];
         luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>_ptr");
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+    return 0;
+}
+static int deref_<%= type_s %>_ptr(lua_State *L) {
+    <%= type %> *p;
+    <%= type %> * *pp =
+        luaL_checkudata(L, 1, "<%= $module_name %>.<%= type_s %>_ptr");
+    p = *pp;
+
+    <%= type %> *res =
+        lua_newuserdata(L, sizeof(*res));
+    if (res != NULL) {
+        *res = *p;
+        luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>");
         lua_setmetatable(L, -2);
         return 1;
     }
