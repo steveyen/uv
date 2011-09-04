@@ -170,18 +170,10 @@ end
 
 # ---------------------------------------------
 
-ALLOCATORS.sort.each do |k|
-  name = k
-  if TYPEDEFS[k]
-    decl = TYPEDEFS[k]
-    name, kind, sub_kind = parse_decl(decl)
-    name = nil if sub_kind == 'function'
-  end
+ALLOCATORS.sort.each do |name|
+  name_s = name.gsub(' ', '_')
 
-  if name
-    name_s = name.gsub(' ', '_')
-
-    print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
+  print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 static int alloc_<%= name_s %>(lua_State *L) {
     <%= name %> *ud = lua_newuserdata(L, sizeof(*ud));
     if (ud != NULL) {
@@ -192,7 +184,6 @@ static int alloc_<%= name_s %>(lua_State *L) {
     return 0;
 }
 EOF
-  end
 end
 
 # ---------------------------------------------
