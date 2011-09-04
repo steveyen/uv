@@ -171,13 +171,18 @@ end
 # ---------------------------------------------
 
 ALLOCATORS.sort.each do |name|
-  name_s = name.gsub(' ', '_')
+  name_s = name.gsub('*', ' * ').
+                squeeze(' ').strip.
+                gsub('*', 'ptr').
+                gsub(' ', '_')
 
   print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 static int alloc_<%= name_s %>(lua_State *L) {
-    <%= name %> *ud = lua_newuserdata(L, sizeof(*ud));
-    if (ud != NULL) {
-        luaL_newmetatable(L, "<%= $module_name %>.<%= name_s %>");
+    <%= name %> * *p =
+        lua_newuserdata(L, sizeof(<%= name %> *) + sizeof(<%= name %>));
+    if (p != NULL) {
+        *p = (<%= name %> *) &p[1];
+        luaL_newmetatable(L, "<%= $module_name %>.<%= name_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
