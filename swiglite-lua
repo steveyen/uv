@@ -55,11 +55,19 @@ FUNCTIONS = KINDS['function'] || {}
 
 # ---------------------------------------------
 
+def name_for_type(type)
+  return type.gsub('*', ' * ').
+              gsub('*', 'ptr').
+              gsub('struct ', '').
+              gsub('const ', '').
+              squeeze(' ').strip.
+              gsub(' ', '_')
+end
+
 def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
   type_key = c_type.join(' ').
                     gsub('unsigned ', '').
-                    gsub('signed ', '').
-                    squeeze(' ').strip
+                    gsub('signed ', '')
 
   check_val, push_val = MAP_TYPE[type_key]
 
@@ -67,14 +75,7 @@ def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
     check_val, push_val = MAP_TYPE['int'] # Treat enum as int.
   end
 
-  type_name = type_key.gsub('*', ' * ').
-                       gsub('*', 'ptr').
-                       gsub('struct ', '').
-                       gsub('const ', '').
-                       squeeze(' ').strip.
-                       gsub(' ', '_')
-
-  return type_name, check_val, push_val
+  return name_for_type(type_key), check_val, push_val
 end
 
 def arg_from_lua(arg_type, arg_name, arg_i)
@@ -104,19 +105,6 @@ print <<-EOF
 #{$include_files.map {|x| "#include \"#{x}\"" }.join("\n")}
 
 EOF
-
-if true
-  print("/* inputs...\n")
-  KINDS.keys.sort.each do |k|
-    print("  #{k}:\n")
-    kind = KINDS[k]
-    kind.keys.sort.each do |n|
-      print("    #{n}:\n")
-      print("      #{kind[n].join('><')}\n")
-    end
-  end
-  print("\n*/\n\n")
-end
 
 # ---------------------------------------------
 
@@ -172,11 +160,7 @@ end
 # ---------------------------------------------
 
 ALLOCATORS.sort.each do |type|
-  type_s = type.gsub('struct ', '').
-                gsub('*', ' * ').
-                squeeze(' ').strip.
-                gsub('*', 'ptr').
-                gsub(' ', '_')
+  type_s = name_for_type(type)
 
   REGISTER << ["alloc_#{type_s}_ptr"]
   REGISTER << ["deref_#{type_s}_ptr"]
