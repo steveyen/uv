@@ -25,6 +25,7 @@ MAP_TYPE = {
   # [ luaL_check$VAL, lua_push$VAL ]
   'int'    => ['int', 'integer'],
   'long'   => ['long', 'integer'],
+  'size_t' => ['long', 'integer'],
   'double' => ['number', 'number'],
   'char *' => ['string', 'string']
 }
@@ -120,10 +121,12 @@ static int wrap_<%= name %>(lua_State *L) {
     return 0;
 % else
 %   return_s = return_type.join(' ').
-%                          gsub('*', ' * ').squeeze(' ').strip
-    <%= return_s %> res =
+%                          gsub('*', ' * ').
+%                          gsub('const ', '').
+%                          squeeze(' ').strip
+    <%= return_s %> res = (<%= return_s %>)
         <%= name %>(<%= args_names(args).join(', ') %>);
-%   type_name, check_val, push_val = map_type(return_type)
+%   type_name, check_val, push_val = map_type(return_s.split(' '))
 %   if push_val
     lua_push<%= push_val %>(L, res);
     return 1;
@@ -132,7 +135,7 @@ static int wrap_<%= name %>(lua_State *L) {
         lua_newuserdata(L, sizeof(<%= return_s %>));
     if (res_ud != NULL) {
         *res_ud = res;
-        luaL_getmetatable(L, "<%= $module_name %>.<%= type_name %>");
+        luaL_newmetatable(L, "<%= $module_name %>.<%= type_name %>");
         lua_setmetatable(L, -2);
         return 1;
     }
