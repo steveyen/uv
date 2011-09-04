@@ -37,20 +37,19 @@ $include_files = ARGV[1..-1]
 $src = STDIN.read
 $src = $src.gsub(/^\s*#.+$/, '')
 
-KINDS      = {}
-REGISTER   = []
-ALLOCATORS = []
+KINDS      = {} # Result of parse.
+REGISTER   = [] # Functions that will be registered with the module.
+ALLOCATORS = [] # Types that will have explicit allocator functions.
 
 # User's module-specific specializations loaded here.
 #
-[ ".swiglite", ".swiglite-lua" ].each do |suffix|
-  load($module_name + suffix) if File.exists?($module_name + suffix)
+[ ".swiglite", ".swiglite-lua" ].each do |x|
+  load($module_name + x) if File.exists?($module_name + x)
 end
 
 parse($src, KINDS)
 
 ENUMS     = KINDS['enum']     || {}
-TYPEDEFS  = KINDS['typedef']  || {}
 FUNCTIONS = KINDS['function'] || {}
 
 # ---------------------------------------------
