@@ -171,15 +171,21 @@ end
 # ---------------------------------------------
 
 ALLOCATORS.sort.each do |k|
-  decl = TYPEDEFS[k]
+  name = k
+  if TYPEDEFS[k]
+    decl = TYPEDEFS[k]
+    name, kind, sub_kind = parse_decl(decl)
+    name = nil if sub_kind == 'function'
+  end
 
-  name, kind, sub_kind = parse_decl(decl)
-  if sub_kind != 'function'
-     print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-static int alloc_<%= name %>(lua_State *L) {
+  if name
+    name_s = name.gsub(' ', '_')
+
+    print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
+static int alloc_<%= name_s %>(lua_State *L) {
     <%= name %> *ud = lua_newuserdata(L, sizeof(*ud));
     if (ud != NULL) {
-        luaL_newmetatable(L, "<%= $module_name %>.<%= name %>");
+        luaL_newmetatable(L, "<%= $module_name %>.<%= name_s %>");
         lua_setmetatable(L, -2);
         return 1;
     }
