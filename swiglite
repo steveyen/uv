@@ -51,35 +51,34 @@ def parse_decl(decl) # Parse one declaration.
   first_parts = decl[0].split(' ').
                         select {|x| x != "extern" and
                                     x != "__const" }
-  case first_parts[0]
-    when 'typedef'
-      if decl[-1] == ')' and
-         decl.count {|x| x == '(' } > 1
-        # Example: typedef void (*uv_close_cb)(uv_handle_t* handle);
-        return decl[decl.index('(') + 1], first_parts[0], 'function'
-      end
+  if first_parts[0] == 'typedef'
+    if decl[-1] == ')' and
+       decl.count {|x| x == '(' } > 1
+      # Example: typedef void (*uv_close_cb)(uv_handle_t* handle);
+      return decl[decl.index('(') + 1], first_parts[0], 'function'
+    end
 
-      # Example: typedef enum { ...} name_of_enum;
-      return decl[-1].split(' ')[-1], 'enum' if first_parts[1] == 'enum'
+    # Example: typedef enum { ...} name_of_enum;
+    return decl[-1].split(' ')[-1], 'enum' if first_parts[1] == 'enum'
 
-      # Example: typedef struct uv_req_s uv_req_t;
-      return decl[-1].split(' ')[-1], first_parts[0]
-
-    when 'struct', 'union', 'enum'
-      # Example: struct cmsghdr
-      # Example: struct cmsghdr{int foo; int bar}
-      return first_parts[-1], first_parts[0]
-
-    else
-      if decl.include?('(')
-        # Example: void uv_init();
-        return first_parts[-1], 'function',
-               first_parts[0..-2]
-      end
-
-      print "\n\nERROR: unknown name/type for #{decl.join("><")}\n"
-      exit(-1)
+    # Example: typedef struct uv_req_s uv_req_t;
+    return decl[-1].split(' ')[-1], first_parts[0]
   end
+
+  if decl.include?('(')
+    # Example: void uv_init();
+    return first_parts[-1], 'function',
+           first_parts[0..-2]
+  end
+
+  if ['struct', 'union', 'enum'].include?(first_parts[0])
+    # Example: struct cmsghdr
+    # Example: struct cmsghdr{int foo; int bar}
+    return first_parts[-1], first_parts[0]
+  end
+
+  print "\n\nERROR: unknown name/type for #{decl.join("><")}\n"
+  exit(-1)
 end
 
 def parse_enum_values(decl) # Returns the values in an enum.

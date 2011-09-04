@@ -170,19 +170,20 @@ end
 
 # ---------------------------------------------
 
-ALLOCATORS.sort.each do |name|
-  name_s = name.gsub('*', ' * ').
+ALLOCATORS.sort.each do |type|
+  type_s = type.gsub('struct ', '').
+                gsub('*', ' * ').
                 squeeze(' ').strip.
                 gsub('*', 'ptr').
                 gsub(' ', '_')
 
   print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-static int alloc_<%= name_s %>(lua_State *L) {
-    <%= name %> * *p =
-        lua_newuserdata(L, sizeof(<%= name %> *) + sizeof(<%= name %>));
+static int alloc_<%= type_s %>(lua_State *L) {
+    <%= type %> * *p =
+        lua_newuserdata(L, sizeof(<%= type %> *) + sizeof(<%= type %>));
     if (p != NULL) {
-        *p = (<%= name %> *) &p[1];
-        luaL_newmetatable(L, "<%= $module_name %>.<%= name_s %>_ptr");
+        *p = (<%= type %> *) &p[1];
+        luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
