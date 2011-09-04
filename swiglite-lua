@@ -37,8 +37,8 @@ $include_files = ARGV[1..-1]
 $src = STDIN.read
 $src = $src.gsub(/^\s*#.+$/, '')
 
-KINDS = {}
-
+KINDS      = {}
+REGISTER   = []
 ALLOCATORS = []
 
 # User's module-specific specializations loaded here.
@@ -130,6 +130,7 @@ FUNCTIONS.keys.sort.each do |k|
   args   = args_s.split(',')
 
   unless SKIP[name]
+    REGISTER << [name, "wrap_#{name}"]
     print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 static int wrap_<%= name %>(lua_State *L) {
 % args.each_index do |arg_i|
@@ -177,6 +178,9 @@ ALLOCATORS.sort.each do |type|
                 gsub('*', 'ptr').
                 gsub(' ', '_')
 
+  REGISTER << ["alloc_#{type_s}_ptr"]
+  REGISTER << ["deref_#{type_s}_ptr"]
+
   print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 static int alloc_<%= type_s %>_ptr(lua_State *L) {
     <%= type %> * *pp =
@@ -213,10 +217,8 @@ end
 print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 LUA_API int luaopen_<%= $module_name %>(lua_State *L) {
     luaL_reg reg[] = {
-% FUNCTIONS.keys.sort.each do |k|
-%   unless SKIP[k]
-        {"<%= k %>", wrap_<%= k %>},
-%   end
+% REGISTER.sort.each do |register|
+        {"<%= register[0] %>", <%= register[-1] %>},
 % end
         {NULL, NULL}
     };
