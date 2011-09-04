@@ -47,7 +47,8 @@ end
 
 parse($src, KINDS)
 
-ENUMS     = KINDS['enum'] || {}
+ENUMS     = KINDS['enum']     || {}
+TYPEDEFS  = KINDS['typedef']  || {}
 FUNCTIONS = KINDS['function'] || {}
 
 # ---------------------------------------------
@@ -117,7 +118,17 @@ end
 
 # ---------------------------------------------
 
-wrap_function = ERB.new(<<-'EOF', 0, "%<>")
+FUNCTIONS.keys.sort.each do |k|
+  decl = FUNCTIONS[k]
+
+  name, kind, return_type = parse_decl(decl)
+
+  args_s = decl[(decl.rindex("(") + 1)..-2].join('').strip
+  args_s = "" if args_s == "void"
+  args   = args_s.split(',')
+
+  unless SKIP[name]
+    print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 static int wrap_<%= name %>(lua_State *L) {
 % args.each_index do |arg_i|
 %   arg_type, arg_name = arg_parts(args[arg_i], arg_i)
@@ -152,17 +163,19 @@ static int wrap_<%= name %>(lua_State *L) {
 % end
 }
 EOF
+  end
+end
 
-FUNCTIONS.keys.sort.each do |k|
-  decl = FUNCTIONS[k]
+# ---------------------------------------------
 
-  name, kind, return_type = parse_decl(decl)
+TYPEDEFS.keys.sort.each do |k|
+  decl = TYPEDEFS[k]
 
-  args_s = decl[(decl.rindex("(") + 1)..-2].join('').strip
-  args_s = "" if args_s == "void"
-  args   = args_s.split(',')
-
-  print(wrap_function.result(binding)) unless SKIP[name]
+  name, kind, sub_kind = parse_decl(decl)
+  if sub_kind != 'function'
+     print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
+EOF
+  end
 end
 
 # ---------------------------------------------
