@@ -1,11 +1,19 @@
-SKIP['uv_udp_send'] = true
-SKIP['uv_udp_send6'] = true
-SKIP['uv_write'] = true
-
+# Generate alloc_XXX() functions for these C types...
+#
 ALLOCATORS << 'uv_tcp_t'
 ALLOCATORS << 'uv_udp_t'
 ALLOCATORS << 'uv_pipe_t'
 ALLOCATORS << 'struct sockaddr_in'
 ALLOCATORS << 'struct sockaddr_in6'
 
+# Skip wrapper generation for these hand-built or
+# difficult-to-map functions...
+#
+SKIP['uv_listen'] = true
+SKIP['uv_udp_send'] = true
+SKIP['uv_udp_send6'] = true
+SKIP['uv_write'] = true
+
 REGISTER << ["test_helper_func"]
+REGISTER << ["uv_listen", "wrap_uv_listen"]
+
