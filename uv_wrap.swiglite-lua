@@ -1,10 +1,10 @@
 # Generate alloc_XXX() functions for these C types...
 #
-ALLOCATORS << 'uv_tcp_t'
-ALLOCATORS << 'uv_udp_t'
-ALLOCATORS << 'uv_pipe_t'
-ALLOCATORS << 'struct sockaddr_in'
-ALLOCATORS << 'struct sockaddr_in6'
+ALLOCATORS << ['uv_tcp_t', 'uv_stream_t']
+ALLOCATORS << ['uv_udp_t', 'uv_stream_t']
+ALLOCATORS << ['uv_pipe_t', 'uv_stream_t']
+ALLOCATORS << ['struct sockaddr_in']
+ALLOCATORS << ['struct sockaddr_in6']
 
 # Skip wrapper generation for these hand-built or
 # difficult-to-map functions...

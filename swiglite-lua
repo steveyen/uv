@@ -39,7 +39,9 @@ $src = $src.gsub(/^\s*#.+$/, '')
 
 KINDS      = {} # Result of parse.
 REGISTER   = [] # Functions that will be registered with the module.
-ALLOCATORS = [] # Types that will have explicit allocator functions.
+ALLOCATORS = [] # Types that will have explicit allocator functions,
+                # with optional cast types.  Each entry looks like...
+                # [type-name, cast0, cast1, ...]
 
 # User's module-specific specializations loaded here.
 #
@@ -158,7 +160,8 @@ end
 
 # ---------------------------------------------
 
-ALLOCATORS.sort.each do |type|
+ALLOCATORS.sort.each do |type_casts|
+  type   = type_casts[0]
   type_s = name_for_type(type)
 
   REGISTER << ["alloc_#{type_s}_ptr"]
@@ -193,6 +196,33 @@ int deref_<%= type_s %>_ptr(lua_State *L) {
     return 0;
 }
 EOF
+
+  type_casts[1..-1].sort.each do |cast|
+    cast_s = name_for_type(cast)
+    cast_f = "cast_#{type_s}_ptr_to_#{cast_s}_ptr"
+
+    REGISTER << [cast_f]
+
+    print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
+int <%= cast_f %>(lua_State *L) {
+    <%= type %> *p;
+    <%= type %> * *pp =
+        luaL_checkudata(L, 1, "<%= $module_name %>.<%= type_s %>_ptr");
+    p = *pp;
+
+    <%= cast %> * *res =
+        lua_newuserdata(L, sizeof(*res));
+    if (res != NULL) {
+        *res = (<%= cast %> *) p;
+        luaL_newmetatable(L, "<%= $module_name %>.<%= cast_s %>_ptr");
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+    return 0;
+}
+EOF
+
+  end
 end
 
 # ---------------------------------------------
