@@ -7,3 +7,5 @@ ALLOCATORS << 'uv_udp_t'
 ALLOCATORS << 'uv_pipe_t'
 ALLOCATORS << 'struct sockaddr_in'
 ALLOCATORS << 'struct sockaddr_in6'
+
+REGISTER << ["test_helper_func"]

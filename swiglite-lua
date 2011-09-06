@@ -119,7 +119,7 @@ FUNCTIONS.keys.sort.each do |k|
   unless SKIP[name]
     REGISTER << [name, "wrap_#{name}"]
     print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-static int wrap_<%= name %>(lua_State *L) {
+int wrap_<%= name %>(lua_State *L) {
 % args.each_index do |arg_i|
 %   arg_type, arg_name = arg_parts(args[arg_i], arg_i)
     <%= arg_type.join(' ') %> <%= arg_name %>;
@@ -165,7 +165,7 @@ ALLOCATORS.sort.each do |type|
   REGISTER << ["deref_#{type_s}_ptr"]
 
   print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-static int alloc_<%= type_s %>_ptr(lua_State *L) {
+int alloc_<%= type_s %>_ptr(lua_State *L) {
     <%= type %> * *pp =
         lua_newuserdata(L, sizeof(<%= type %> *) + sizeof(<%= type %>));
     if (pp != NULL) {
@@ -176,7 +176,7 @@ static int alloc_<%= type_s %>_ptr(lua_State *L) {
     }
     return 0;
 }
-static int deref_<%= type_s %>_ptr(lua_State *L) {
+int deref_<%= type_s %>_ptr(lua_State *L) {
     <%= type %> *p;
     <%= type %> * *pp =
         luaL_checkudata(L, 1, "<%= $module_name %>.<%= type_s %>_ptr");
@@ -196,6 +196,10 @@ EOF
 end
 
 # ---------------------------------------------
+
+REGISTER.sort.each do |register|
+  print("int #{register[-1]}(lua_State *L);\n")
+end
 
 print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
 LUA_API int luaopen_<%= $module_name %>(lua_State *L) {
