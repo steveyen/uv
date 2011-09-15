@@ -79,18 +79,24 @@ def map_type(c_type) # Ex: ['char *'] or ['char', '*'].
   return name_for_type(type_key), check_val, push_val
 end
 
-def arg_from_lua(arg_type, arg_name, arg_i)
+def arg_from_lua(func_name, arg_type, arg_name, arg_i)
   i = arg_i + 1
   type_name, check_val, push_val = map_type(arg_type)
   if check_val
     "#{arg_name} = (#{arg_type.join(' ')})" +
       " luaL_check#{check_val}(L, #{i});\n"
   else
-    <<-EOF
+    res = <<-EOF
 #{arg_type.join(' ')} *#{arg_name}_p =
         luaL_checkudata(L, #{i}, "#{$module_name}.#{type_name}");
     #{arg_name} = *#{arg_name}_p;
 EOF
+
+    if arg_type.include?('*')
+      res = res + "    printf(\"  #{func_name}.#{arg_name}: %p\\n\", #{arg_name});\n"
+    end
+
+    res
   end
 end
 
@@ -119,13 +125,14 @@ FUNCTIONS.keys.sort.each do |k|
   args   = args_s.split(',')
 
   unless SKIP[name]
-    REGISTER << [name, "wrap_#{name}"]
+    wrap_name = "wrap_#{name}"
+    REGISTER << [name, wrap_name]
     print(ERB.new(<<-'EOF', 0, "%<>").result(binding))
-int wrap_<%= name %>(lua_State *L) {
+int <%= wrap_name %>(lua_State *L) {
 % args.each_index do |arg_i|
 %   arg_type, arg_name = arg_parts(args[arg_i], arg_i)
     <%= arg_type.join(' ') %> <%= arg_name %>;
-    <%= arg_from_lua(arg_type, arg_name, arg_i) %>
+    <%= arg_from_lua(wrap_name, arg_type, arg_name, arg_i) %>
 % end
 % if return_type.include?('void')
     <%= name %>(<%= args_names(args).join(', ') %>);
@@ -146,6 +153,10 @@ int wrap_<%= name %>(lua_State *L) {
         lua_newuserdata(L, sizeof(<%= return_s %>));
     if (res_ud != NULL) {
         *res_ud = res;
+%     if return_s.include?('*')
+        printf("return wrap_<%= name %> %p\n", *res_ud);
+%     end
+
         luaL_newmetatable(L, "<%= $module_name %>.<%= type_name %>");
         lua_setmetatable(L, -2);
         return 1;
@@ -173,6 +184,7 @@ int alloc_<%= type_s %>_ptr(lua_State *L) {
         lua_newuserdata(L, sizeof(<%= type %> *) + sizeof(<%= type %>));
     if (pp != NULL) {
         *pp = (<%= type %> *) &pp[1];
+        printf("return alloc_<%= type_s %>_ptr %p\n", *pp);
         luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;
@@ -214,6 +226,7 @@ int <%= cast_f %>(lua_State *L) {
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = (<%= cast %> *) p;
+        printf("return <%= cast_f %>_ptr %p\n", *res);
         luaL_newmetatable(L, "<%= $module_name %>.<%= cast_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;

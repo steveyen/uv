@@ -23,6 +23,8 @@ tcp_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(tcp)
 
 assert(0 == l.uv_listen(tcp_stream, 1024, on_connection))
 
+print("running loop\n")
+
 l.uv_run(loop)
 
 print("OK")
