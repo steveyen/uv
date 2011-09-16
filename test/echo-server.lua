@@ -1,8 +1,6 @@
 l = require('uv_wrap')
 assert(l and l.UV_OK)
 
-l.uv_init()
-
 port = 11700
 addr = l.uv_ip4_addr("0.0.0.0", port)
 assert(addr)
@@ -21,7 +19,7 @@ end
 
 tcp_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(tcp)
 
-assert(0 == l.uv_listen(tcp_stream, 1024, on_connection))
+assert(0 == l.uv_listen(tcp_stream, 128, on_connection))
 
 print("running loop\n")
 

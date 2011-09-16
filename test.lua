@@ -6,15 +6,11 @@ if false then
   end
 end
 
-assert(uv_wrap.test_helper_func(20) == -4)
-
 assert(uv_wrap.UV_UNKNOWN == -1)
 assert(uv_wrap.UV_OK == 0)
 assert(uv_wrap.UV_EOF == 1)
 
 print("OK - basic enums")
-
-uv_wrap.uv_init()
 
 d0 = uv_wrap.uv_default_loop()
 assert(d0)

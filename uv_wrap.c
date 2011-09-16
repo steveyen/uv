@@ -198,8 +198,6 @@ static void on_server_close(uv_handle_t* handle) {
 
 LUA_API int test_helper_func(lua_State *L) {
 
-
-  uv_init();
   loop = uv_default_loop();
   int port = 11800;
   struct sockaddr_in addr = uv_ip4_addr("0.0.0.0", port);
