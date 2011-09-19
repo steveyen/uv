@@ -1,6 +1,6 @@
 uv_wrap = require("uv_wrap")
 
-if false then
+if true then
   for k, v in pairs(uv_wrap) do
     print(k, v)
   end
