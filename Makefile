@@ -19,9 +19,9 @@ clean:
 
 uv_wrap.so: ${LIBUV_DIR}/uv.a uv_wrap.o uv_wrap_gen.o
 	$(CC) -o uv_wrap.so \
-        -bundle -bundle_loader ${LUA_PREFIX}/bin/lua \
-        uv_wrap.o uv_wrap_gen.o \
-        ${LIBUV_DIR}/uv.a $(LINKFLAGS)
+        uv_wrap.o uv_wrap_gen.o ${LIBUV_DIR}/uv.a \
+	    $(LINKFLAGS) \
+        -bundle -bundle_loader ${LUA_PREFIX}/bin/lua
 
 uv_wrap_gen.c:
 	grep -v "#include" ${LIBUV_DIR}/include/uv.h | cpp | \
