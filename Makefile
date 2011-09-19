@@ -25,3 +25,7 @@ uv_wrap_gen.c:
 	grep -v "#include" ${LIBUV_DIR}/include/uv.h | cpp | \
         sed -E "s,[A-Z_]+_PRIVATE_[A-Z_]+,,g" | \
             ./swiglite-lua uv_wrap uv.h > uv_wrap_gen.c
+
+libuv.dylib: ${LIBUV_DIR}/uv.a
+	$(CC) -shared -o libuv.dylib \
+        ${LIBUV_DIR}/uv.a
