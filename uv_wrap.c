@@ -41,7 +41,7 @@ LUA_API int wrap_uv_listen(lua_State *L) {
         luaL_error(L, "malloc failed");
     }
     ref->L = L;
-    ref->ref = luaL_ref(L, -1);
+    ref->ref = luaL_ref(L, LUA_REGISTRYINDEX);
     if (ref->ref == LUA_NOREF ||
         ref->ref == LUA_REFNIL) {
         free(ref);
@@ -52,6 +52,8 @@ LUA_API int wrap_uv_listen(lua_State *L) {
 
     int res = (int)
         uv_listen(stream, backlog, wrap_uv_on_connection);
+
+    printf("wrap_uv_listen %p %p %d %d\n", stream, stream->loop, backlog, res);
 
     lua_pushinteger(L, res);
     return 1;
