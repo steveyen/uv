@@ -58,7 +58,13 @@ static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
 
     lua_pushnumber(ref->L, nread);
 
-    if (lua_pcall(ref->L, 1, 1, 0) != 0) {
+    if (nread > 0) {
+        lua_pushlstring(ref->L, buf.base, nread);
+    } else {
+        lua_pushnil(ref->L);
+    }
+
+    if (lua_pcall(ref->L, 2, 1, 0) != 0) {
         printf("wrap_uv_on_read pcall error: %s\n",
                lua_tostring(ref->L, -1));
     }
