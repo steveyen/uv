@@ -46,7 +46,7 @@ static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
                             uv_buf_t buf) {
     assert(stream);
 
-    printf("wrap_uv_on_read, nread: %d\n", nread);
+    printf("wrap_uv_on_read, nread: %d\n", (int) nread);
 
     lua_ref *ref = stream->data;
     assert(ref != NULL);
@@ -58,7 +58,10 @@ static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
 
     lua_pushnumber(ref->L, nread);
 
-    lua_pcall(ref->L, 1, 0, 0);
+    if (lua_pcall(ref->L, 1, 1, 0) != 0) {
+        printf("wrap_uv_on_read pcall error: %s\n",
+               lua_tostring(ref->L, -1));
+    }
 
     free(buf.base);
 }
