@@ -9,10 +9,11 @@ ALLOCATORS << ['struct sockaddr_in6']
 # Skip wrapper generation for these hand-built or
 # difficult-to-map functions...
 #
-%w{ uv_listen uv_udp_send uv_udp_send6 uv_write }.each do |x|
+%w{ uv_listen uv_read_start uv_udp_send uv_udp_send6 uv_write }.each do |x|
   SKIP[x] = true
 end
 
 REGISTER << ["test_helper_func"]
 REGISTER << ["uv_listen", "wrap_uv_listen"]
+REGISTER << ["uv_read_start", "wrap_uv_read_start"]
 

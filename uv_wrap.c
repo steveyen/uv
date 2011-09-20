@@ -15,6 +15,74 @@ typedef struct lua_ref {
     int ref;
 } lua_ref;
 
+static lua_ref *ref_function(lua_State *L, int index) {
+    luaL_checktype(L, index, LUA_TFUNCTION);
+    lua_pushvalue(L, index);
+
+    lua_ref *ref = malloc(sizeof(lua_ref));
+    if (ref != NULL) {
+        ref->L = L;
+        ref->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+        if (ref->ref != LUA_NOREF &&
+            ref->ref != LUA_REFNIL) {
+            return ref;
+        }
+
+        free(ref);
+        luaL_error(L, "luaL_ref failed");
+    } else {
+        luaL_error(L, "ref malloc failed");
+    }
+
+    return NULL;
+}
+
+static uv_buf_t wrap_uv_on_alloc(uv_handle_t *handle,
+                                 size_t suggested_size) {
+    return uv_buf_init(malloc(suggested_size), suggested_size);
+}
+
+static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
+                            uv_buf_t buf) {
+    assert(stream);
+
+    printf("wrap_uv_on_read, nread: %d\n", nread);
+
+    lua_ref *ref = stream->data;
+    assert(ref != NULL);
+    assert(ref->L != NULL);
+    assert(ref->ref != LUA_NOREF);
+    assert(ref->ref != LUA_REFNIL);
+
+    lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
+
+    lua_pushnumber(ref->L, nread);
+
+    lua_pcall(ref->L, 1, 0, 0);
+
+    free(buf.base);
+}
+
+LUA_API int wrap_uv_read_start(lua_State *L) {
+    printf("  wrap_uv_read_start\n");
+
+    uv_stream_t *stream;
+    uv_stream_t **stream_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    stream = *stream_p;
+    printf("  wrap_uv_read_start.stream: %p\n", stream);
+
+    luaL_argcheck(L, stream->data == NULL, 1,
+                  "stream->data is not NULL");
+
+    stream->data = ref_function(L, 2);
+
+    int res = (int)
+        uv_read_start(stream, wrap_uv_on_alloc, wrap_uv_on_read);
+    lua_pushinteger(L, res);
+    return 1;
+}
+
 static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     assert(server);
 
@@ -23,14 +91,17 @@ static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     lua_ref *ref = server->data;
     assert(ref != NULL);
     assert(ref->L != NULL);
-    assert(ref->ref != LUA_NOREF &&
-           ref->ref != LUA_REFNIL);
+    assert(ref->ref != LUA_NOREF);
+    assert(ref->ref != LUA_REFNIL);
 
     lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
     lua_pushnumber(ref->L, status);
 
-    lua_pcall(ref->L, 2, 0, 0);
+    if (lua_pcall(ref->L, 1, 1, 0) != 0) {
+        printf("wrap_uv_on_listen pcall error: %s\n",
+               lua_tostring(ref->L, -1));
+    }
 }
 
 LUA_API int wrap_uv_listen(lua_State *L) {
@@ -39,27 +110,12 @@ LUA_API int wrap_uv_listen(lua_State *L) {
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
 
-    luaL_argcheck (L, stream->data == NULL, 1,
-                   "stream->data is not NULL");
+    luaL_argcheck(L, stream->data == NULL, 1,
+                  "stream->data is not NULL");
 
     int backlog = (int) luaL_checkint(L, 2);
 
-    luaL_checktype(L, 3, LUA_TFUNCTION);
-    lua_pushvalue(L, 3);
-
-    lua_ref *ref = malloc(sizeof(lua_ref));
-    if (ref == NULL) {
-        luaL_error(L, "malloc failed");
-    }
-    ref->L = L;
-    ref->ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    if (ref->ref == LUA_NOREF ||
-        ref->ref == LUA_REFNIL) {
-        free(ref);
-        luaL_error(L, "luaL_ref failed");
-    }
-
-    stream->data = ref;
+    stream->data = ref_function(L, 3);
 
     printf("wrap_uv_listen %p %p %d\n", stream, stream->loop, backlog);
 
@@ -70,7 +126,6 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
-
 
 // ----------------------------------------
 
