@@ -6,7 +6,10 @@ LIBUV_DIR = ../libuv
 CFLAGS = -I${LIBUV_DIR}/include -g
 
 ifeq (Darwin, $(uname_S))
-LINKFLAGS+=-framework CoreServices -bundle -bundle_loader ${LUA_PREFIX}/bin/lua
+LINKFLAGS += -bundle -bundle_loader ${LUA_PREFIX}/bin/lua
+LINKFLAGS += -framework CoreServices
+else
+LINKFLAGS += -shared
 endif
 
 all: uv_wrap.so
