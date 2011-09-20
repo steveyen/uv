@@ -1,3 +1,5 @@
+#!/usr/bin/env luajit
+
 l = require('uv_wrap')
 assert(l and l.UV_OK)
 
