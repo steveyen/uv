@@ -1,3 +1,5 @@
+#!/usr/bin/env lua
+
 uv_wrap = require("uv_wrap")
 
 if true then
