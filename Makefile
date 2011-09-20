@@ -15,7 +15,7 @@ endif
 all: uv_wrap.so
 
 test: all
-	lua test.lua
+	lua test/test.lua
 
 clean:
 	rm -f *.so *.o uv_wrap_gen.c

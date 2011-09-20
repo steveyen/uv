@@ -30,6 +30,9 @@ LUA_API int wrap_uv_listen(lua_State *L) {
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
 
+    luaL_argcheck (L, stream->data == NULL, 1,
+                   "stream->data is not NULL");
+
     int backlog;
     backlog = (int) luaL_checkint(L, 2);
 
@@ -48,10 +51,11 @@ LUA_API int wrap_uv_listen(lua_State *L) {
         luaL_error(L, "luaL_ref failed");
     }
 
+    stream->data = ref;
+
     printf("wrap_uv_listen %p %p %d\n", stream, stream->loop, backlog);
 
-    int res = (int)
-        uv_listen(stream, backlog, wrap_uv_on_connection);
+    int res = (int) uv_listen(stream, backlog, wrap_uv_on_connection);
 
     printf("wrap_uv_listen %p %p %d %d\n", stream, stream->loop, backlog, res);
 
