@@ -62,6 +62,8 @@ LUA_API int wrap_uv_listen(lua_State *L) {
 
 // ----------------------------------------
 
+// An echo-server for testing.
+//
 #define ASSERT assert
 typedef struct {
   uv_write_t req;
