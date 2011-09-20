@@ -10,18 +10,19 @@ assert(addr)
 loop = l.uv_default_loop()
 assert(loop)
 
-tcp = l.alloc_uv_tcp_t_ptr(loop)
-assert(tcp)
+listen_tcp = l.alloc_uv_tcp_t_ptr(loop)
+assert(listen_tcp)
 
-assert(0 == l.uv_tcp_init(loop, tcp))
-assert(0 == l.uv_tcp_bind(tcp, addr))
+assert(0 == l.uv_tcp_init(loop, listen_tcp))
+assert(0 == l.uv_tcp_bind(listen_tcp, addr))
 
-function on_connection()
+listen_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(listen_tcp)
+
+function on_listen(status)
+  print("on_listen " .. status)
 end
 
-tcp_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(tcp)
-
-assert(0 == l.uv_listen(tcp_stream, 128, on_connection))
+assert(0 == l.uv_listen(listen_stream, 128, on_listen))
 
 print("running loop\n")
 

@@ -15,26 +15,32 @@ typedef struct lua_ref {
     int ref;
 } lua_ref;
 
-static void wrap_uv_on_connection(uv_stream_t* server, int status) {
-    printf("hello from conn\n");
+static void wrap_uv_on_listen(uv_stream_t *server, int status) {
+    printf("wrap_uv_on_listen, status: %d\n", status);
 
-    uv_tcp_t *client = malloc(sizeof(uv_tcp_t));
-    uv_tcp_init(server->loop, client);
+    lua_ref *ref = server->data;
+    assert(ref != NULL);
+    assert(ref->L != NULL);
+    assert(ref->ref != LUA_NOREF &&
+           ref->ref != LUA_REFNIL);
 
-    uv_accept(server, (uv_stream_t *) client);
+    lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
+
+    lua_pushnumber(ref->L, status);
+
+    lua_pcall(ref->L, 2, 0, 0);
 }
 
 LUA_API int wrap_uv_listen(lua_State *L) {
-    uv_stream_t * stream;
-    uv_stream_t * *stream_p =
+    uv_stream_t *stream;
+    uv_stream_t **stream_p =
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
 
     luaL_argcheck (L, stream->data == NULL, 1,
                    "stream->data is not NULL");
 
-    int backlog;
-    backlog = (int) luaL_checkint(L, 2);
+    int backlog = (int) luaL_checkint(L, 2);
 
     luaL_checktype(L, 3, LUA_TFUNCTION);
     lua_pushvalue(L, 3);
@@ -55,7 +61,7 @@ LUA_API int wrap_uv_listen(lua_State *L) {
 
     printf("wrap_uv_listen %p %p %d\n", stream, stream->loop, backlog);
 
-    int res = (int) uv_listen(stream, backlog, wrap_uv_on_connection);
+    int res = (int) uv_listen(stream, backlog, wrap_uv_on_listen);
 
     printf("wrap_uv_listen %p %p %d %d\n", stream, stream->loop, backlog, res);
 
