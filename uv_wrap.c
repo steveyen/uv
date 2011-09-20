@@ -16,6 +16,8 @@ typedef struct lua_ref {
 } lua_ref;
 
 static void wrap_uv_on_listen(uv_stream_t *server, int status) {
+    assert(server);
+
     printf("wrap_uv_on_listen, status: %d\n", status);
 
     lua_ref *ref = server->data;
