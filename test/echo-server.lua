@@ -12,7 +12,6 @@ assert(loop)
 
 listen_tcp = l.alloc_uv_tcp_t_ptr(loop)
 assert(listen_tcp)
-
 assert(0 == l.uv_tcp_init(loop, listen_tcp))
 assert(0 == l.uv_tcp_bind(listen_tcp, addr))
 
@@ -20,6 +19,11 @@ listen_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(listen_tcp)
 
 function on_listen(status)
   print("on_listen " .. status)
+
+  client_tcp = l.alloc_uv_tcp_t_ptr(loop)
+  assert(client_tcp)
+  assert(0 == l.uv_tcp_init(loop, client_tcp))
+  assert(0 == l.uv_accept(listen_stream, client_stream))
 end
 
 assert(0 == l.uv_listen(listen_stream, 128, on_listen))
