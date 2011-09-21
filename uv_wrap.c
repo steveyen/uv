@@ -42,6 +42,40 @@ static lua_ref *ref_function(lua_State *L, int index) {
     return NULL;
 }
 
+LUA_API int wrap_uv_write(lua_State *L) {
+    /*
+    uv_write_t * req;
+    uv_write_t * *req_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_write_t_ptr");
+    req = *req_p;
+    printf("  wrap_uv_write.req: %p\n", req);
+
+    uv_stream_t * handle;
+    uv_stream_t * *handle_p =
+        luaL_checkudata(L, 2, "uv_wrap.uv_stream_t_ptr");
+    handle = *handle_p;
+    printf("  wrap_uv_write.handle: %p\n", handle);
+
+    uv_buf_t bufs[];
+    uv_buf_t *bufs[]_p =
+        luaL_checkudata(L, 3, "uv_wrap.uv_buf_t");
+    bufs[] = *bufs[]_p;
+
+    int bufcnt;
+    bufcnt = (int) luaL_checkint(L, 4);
+
+    uv_write_cb cb;
+    uv_write_cb *cb_p =
+        luaL_checkudata(L, 5, "uv_wrap.uv_write_cb");
+    cb = *cb_p;
+
+    int res = (int)
+        uv_write(req, handle, bufs[], bufcnt, cb);
+    lua_pushinteger(L, res);
+    */
+    return 1;
+}
+
 static uv_buf_t wrap_uv_on_alloc(uv_handle_t *handle,
                                  size_t suggested_size) {
     return uv_buf_init(malloc(suggested_size),

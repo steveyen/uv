@@ -15,5 +15,6 @@ end
 
 REGISTER << ["test_helper_func"]
 REGISTER << ["uv_listen", "wrap_uv_listen"]
+REGISTER << ["uv_write", "wrap_uv_write"]
 REGISTER << ["uv_read_start", "wrap_uv_read_start"]
 
