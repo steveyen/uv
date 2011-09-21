@@ -11,26 +11,21 @@
 
 #include "uv.h"
 
-// Holds a reference to a lua object.  For example, a lua function
-// for callbacks from C to lua.
+// Holds a reference to a lua object in the LUA_REGISTRYINDEX.
+// E.g., holding a lua function for callbacks from C to lua.
 //
 typedef struct  {
     lua_State *L;
     int ref;
 } lua_ref_t;
 
-typedef struct {
-    uv_write_t req;
-    uv_buf_t buf;
-    lua_ref_t *cb;
-} write_req_t;
+static void unref(lua_ref_t *ref) {
+    assert(ref && ref->L);
+    luaL_unref(ref->L, LUA_REGISTRYINDEX, ref->ref);
+    free(ref);
+}
 
-// Hold a reference to a function.
-//
-static lua_ref_t *ref_function(lua_State *L, int index) {
-    luaL_checktype(L, index, LUA_TFUNCTION);
-    lua_pushvalue(L, index);
-
+static lua_ref_t *ref(lua_State *L) { // Grabs stack's top item.
     lua_ref_t *ref = calloc(1, sizeof(*ref));
     if (ref != NULL) {
         ref->L = L;
@@ -49,11 +44,21 @@ static lua_ref_t *ref_function(lua_State *L, int index) {
     return NULL;
 }
 
-static void unref(lua_ref_t *ref) {
-    assert(ref && ref->L);
-    luaL_unref(ref->L, LUA_REGISTRYINDEX, ref->ref);
-    free(ref);
+// Grabs a reference to the lua function at the index.
+//
+static lua_ref_t *ref_function(lua_State *L, int index) {
+    luaL_checktype(L, index, LUA_TFUNCTION);
+    lua_pushvalue(L, index);
+    return ref(L);
 }
+
+// -------------------------------------------------------
+
+typedef struct {
+    uv_write_t req;
+    uv_buf_t   buf;
+    lua_ref_t *cb;
+} write_req_t;
 
 static void wrap_uv_on_write(uv_write_t *req, int status) {
     write_req_t *wr = (write_req_t *) req;
@@ -72,6 +77,8 @@ static void wrap_uv_on_write(uv_write_t *req, int status) {
     free(wr);
 }
 
+// params: stream, string, callback(status)
+//
 LUA_API int wrap_uv_write(lua_State *L) {
     uv_stream_t *stream;
     uv_stream_t **stream_p =
@@ -138,6 +145,8 @@ static void wrap_uv_on_read(uv_stream_t *stream,
     free(buf.base);
 }
 
+// params: stream, callback(nread, string)
+//
 LUA_API int wrap_uv_read_start(lua_State *L) {
     uv_stream_t *stream;
     uv_stream_t **stream_p =
@@ -168,6 +177,8 @@ static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     }
 }
 
+// params: stream, backlog, callback(status)
+//
 LUA_API int wrap_uv_listen(lua_State *L) {
     uv_stream_t *stream;
     uv_stream_t **stream_p =
