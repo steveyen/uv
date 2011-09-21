@@ -10,11 +10,16 @@
 
 #include "uv.h"
 
+// Holds a reference to a lua object.  For example, a lua function
+// for callbacks from C to lua.
+//
 typedef struct lua_ref {
     lua_State *L;
     int ref;
 } lua_ref;
 
+// Hold a reference to a function.
+//
 static lua_ref *ref_function(lua_State *L, int index) {
     luaL_checktype(L, index, LUA_TFUNCTION);
     lua_pushvalue(L, index);
@@ -39,21 +44,16 @@ static lua_ref *ref_function(lua_State *L, int index) {
 
 static uv_buf_t wrap_uv_on_alloc(uv_handle_t *handle,
                                  size_t suggested_size) {
-    return uv_buf_init(malloc(suggested_size), suggested_size);
+    return uv_buf_init(malloc(suggested_size),
+                       suggested_size);
 }
 
-static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
+static void wrap_uv_on_read(uv_stream_t *stream,
+                            ssize_t nread,
                             uv_buf_t buf) {
     assert(stream);
 
-    printf("wrap_uv_on_read, nread: %d\n", (int) nread);
-
     lua_ref *ref = stream->data;
-    assert(ref != NULL);
-    assert(ref->L != NULL);
-    assert(ref->ref != LUA_NOREF);
-    assert(ref->ref != LUA_REFNIL);
-
     lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
     lua_pushnumber(ref->L, nread);
@@ -73,13 +73,10 @@ static void wrap_uv_on_read(uv_stream_t *stream, ssize_t nread,
 }
 
 LUA_API int wrap_uv_read_start(lua_State *L) {
-    printf("  wrap_uv_read_start\n");
-
     uv_stream_t *stream;
     uv_stream_t **stream_p =
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
-    printf("  wrap_uv_read_start.stream: %p\n", stream);
 
     luaL_argcheck(L, stream->data == NULL, 1,
                   "stream->data is not NULL");
@@ -95,14 +92,7 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
 static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     assert(server);
 
-    printf("wrap_uv_on_listen, status: %d\n", status);
-
     lua_ref *ref = server->data;
-    assert(ref != NULL);
-    assert(ref->L != NULL);
-    assert(ref->ref != LUA_NOREF);
-    assert(ref->ref != LUA_REFNIL);
-
     lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
     lua_pushnumber(ref->L, status);
@@ -126,13 +116,9 @@ LUA_API int wrap_uv_listen(lua_State *L) {
 
     stream->data = ref_function(L, 3);
 
-    printf("wrap_uv_listen %p %p %d\n", stream, stream->loop, backlog);
-
     int res = (int) uv_listen(stream, backlog, wrap_uv_on_listen);
-
-    printf("wrap_uv_listen %p %p %d %d\n", stream, stream->loop, backlog, res);
-
     lua_pushinteger(L, res);
+
     return 1;
 }
 
