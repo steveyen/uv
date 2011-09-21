@@ -16,8 +16,17 @@ assert(0 == l.uv_tcp_init(loop, listen_tcp))
 assert(0 == l.uv_tcp_bind(listen_tcp, addr))
 listen_stream = l.cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(listen_tcp)
 
+function on_write(status)
+  print("on_write " .. status)
+end
+
 function on_read(nread, s)
-  print("on_read " .. nread .. ": " .. tostring(s))
+  if nread > 0 then
+    print("on_read " .. nread .. ": " .. s)
+    l.uv_write(client_stream, s, on_write)
+  else
+    print("on_read " .. nread)
+  end
 end
 
 function on_listen(status)

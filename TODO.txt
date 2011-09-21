@@ -1,0 +1,9 @@
+* use memset of alloc_foo().
+
+* alloc explicit definition of metatable for alloc_foo()
+
+Lower prioritiy, since we need both metatables.
+
+* track reader cb & writer cb in stream->data.
+
+* need lua_unref() API to allow callback GC.

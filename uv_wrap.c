@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include <lua.h>
@@ -20,6 +21,7 @@ typedef struct  {
 
 typedef struct {
     uv_write_t req;
+    uv_buf_t buf;
     lua_ref_t *cb;
 } write_req_t;
 
@@ -29,7 +31,7 @@ static lua_ref_t *ref_function(lua_State *L, int index) {
     luaL_checktype(L, index, LUA_TFUNCTION);
     lua_pushvalue(L, index);
 
-    lua_ref_t *ref = malloc(sizeof(*ref));
+    lua_ref_t *ref = calloc(1, sizeof(*ref));
     if (ref != NULL) {
         ref->L = L;
         ref->ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -41,44 +43,69 @@ static lua_ref_t *ref_function(lua_State *L, int index) {
         free(ref);
         luaL_error(L, "luaL_ref failed");
     } else {
-        luaL_error(L, "ref malloc failed");
+        luaL_error(L, "ref_function malloc failed");
     }
 
     return NULL;
 }
 
+static void unref(lua_ref_t *ref) {
+    assert(ref && ref->L);
+    luaL_unref(ref->L, LUA_REGISTRYINDEX, ref->ref);
+    free(ref);
+}
+
+static void wrap_uv_on_write(uv_write_t *req, int status) {
+    write_req_t *wr = (write_req_t *) req;
+    assert(wr && wr->cb && wr->cb->L);
+    lua_rawgeti(wr->cb->L, LUA_REGISTRYINDEX, wr->cb->ref);
+
+    lua_pushnumber(wr->cb->L, status);
+
+    if (lua_pcall(wr->cb->L, 1, 1, 0) != 0) {
+        printf("wrap_uv_on_write pcall error: %s\n",
+               lua_tostring(wr->cb->L, -1));
+    }
+
+    unref(wr->cb);
+    free(wr->buf.base);
+    free(wr);
+}
+
 LUA_API int wrap_uv_write(lua_State *L) {
-    /*
-    uv_write_t * req;
-    uv_write_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_write_t_ptr");
-    req = *req_p;
-    printf("  wrap_uv_write.req: %p\n", req);
+    uv_stream_t *stream;
+    uv_stream_t **stream_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    stream = *stream_p;
 
-    uv_stream_t * handle;
-    uv_stream_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_stream_t_ptr");
-    handle = *handle_p;
-    printf("  wrap_uv_write.handle: %p\n", handle);
+    size_t slen = 0;
+    const char *s = luaL_checklstring(L, 2, &slen);
+    if (s == NULL || slen <= 0) {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
 
-    uv_buf_t bufs[];
-    uv_buf_t *bufs[]_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_buf_t");
-    bufs[] = *bufs[]_p;
+    char *sb = malloc(slen + 1);
+    if (sb != NULL) {
+        memcpy(sb, s, slen);
+        sb[slen] = '\0';
 
-    int bufcnt;
-    bufcnt = (int) luaL_checkint(L, 4);
+        write_req_t *wr = calloc(1, sizeof(*wr));
+        if (wr != NULL) {
+            wr->buf = uv_buf_init(sb, slen);
+            wr->cb = ref_function(L, 3);
 
-    uv_write_cb cb;
-    uv_write_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_write_cb");
-    cb = *cb_p;
+            int res = uv_write(&wr->req, stream, &wr->buf, 1,
+                               wrap_uv_on_write);
+            lua_pushinteger(L, res);
+            return 1;
+        }
 
-    int res = (int)
-        uv_write(req, handle, bufs[], bufcnt, cb);
-    lua_pushinteger(L, res);
-    */
-    return 1;
+        free(sb);
+    }
+
+    luaL_error(L, "wrap_uv_write malloc failed");
+    return 0;
 }
 
 static uv_buf_t wrap_uv_on_alloc(uv_handle_t *handle,
@@ -91,8 +118,8 @@ static void wrap_uv_on_read(uv_stream_t *stream,
                             ssize_t nread,
                             uv_buf_t buf) {
     assert(stream);
-
     lua_ref_t *ref = stream->data;
+    assert(ref);
     lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
     lua_pushnumber(ref->L, nread);
@@ -118,20 +145,19 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
     stream = *stream_p;
 
     luaL_argcheck(L, stream->data == NULL, 1,
-                  "stream->data is not NULL");
+                  "stream->data is not NULL in wrap_uv_read_start");
 
     stream->data = ref_function(L, 2);
 
-    int res = (int)
-        uv_read_start(stream, wrap_uv_on_alloc, wrap_uv_on_read);
+    int res = uv_read_start(stream, wrap_uv_on_alloc, wrap_uv_on_read);
     lua_pushinteger(L, res);
     return 1;
 }
 
 static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     assert(server);
-
     lua_ref_t *ref = server->data;
+    assert(ref);
     lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
     lua_pushnumber(ref->L, status);
@@ -149,15 +175,14 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     stream = *stream_p;
 
     luaL_argcheck(L, stream->data == NULL, 1,
-                  "stream->data is not NULL");
+                  "stream->data is not NULL in wrap_uv_listen");
 
     int backlog = (int) luaL_checkint(L, 2);
 
     stream->data = ref_function(L, 3);
 
-    int res = (int) uv_listen(stream, backlog, wrap_uv_on_listen);
+    int res = uv_listen(stream, backlog, wrap_uv_on_listen);
     lua_pushinteger(L, res);
-
     return 1;
 }
 
