@@ -38,7 +38,7 @@ static lua_ref_t *ref(lua_State *L) { // Grabs stack's top item.
         free(ref);
         luaL_error(L, "luaL_ref failed");
     } else {
-        luaL_error(L, "ref_function malloc failed");
+        luaL_error(L, "ref malloc failed");
     }
 
     return NULL;
@@ -222,3 +222,49 @@ LUA_API int wrap_uv_cleanup(lua_State *L) {
     return 1;
 }
 
+static void on_work(uv_work_t *wr) {
+    assert(wr);
+
+    lua_ref_t *cb = wr->data;
+    assert(cb);
+
+    lua_rawgeti(cb->L, LUA_REGISTRYINDEX, cb->ref);
+
+    if (lua_pcall(cb->L, 1, 1, 0) != 0) {
+        printf("wrap_uv_on_write pcall error: %s\n",
+               lua_tostring(cb->L, -1));
+    }
+}
+
+static void on_work_after(uv_work_t *wr) {
+    assert(wr);
+
+    lua_ref_t *cb = wr->data;
+    assert(cb);
+
+    unref(cb);
+    free(wr);
+}
+
+// The API for uv_queue_work is simpler because lua has closures.
+//
+// params: loop, callback()
+//
+LUA_API int wrap_uv_queue_work(lua_State *L) {
+    uv_loop_t *loop;
+    uv_loop_t **loop_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+    loop = *loop_p;
+
+    uv_work_t *wr = calloc(1, sizeof(*wr));
+    if (wr != NULL) {
+        wr->data = ref_function(L, 2);
+
+        int res = uv_queue_work(loop, wr, on_work, on_work_after);
+        lua_pushinteger(L, res);
+        return 1;
+    }
+
+    luaL_error(L, "wrap_uv_queue_work malloc failed");
+    return 0;
+}

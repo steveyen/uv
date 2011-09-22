@@ -1394,34 +1394,6 @@ int wrap_uv_process_kill(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
-int wrap_uv_queue_work(lua_State *L) {
-    uv_loop_t * loop;
-    uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
-    loop = *loop_p;
-    printf("  wrap_uv_queue_work.loop: %p\n", loop);
-
-    uv_work_t * req;
-    uv_work_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_work_t_ptr");
-    req = *req_p;
-    printf("  wrap_uv_queue_work.req: %p\n", req);
-
-    uv_work_cb work_cb;
-    uv_work_cb *work_cb_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_work_cb");
-    work_cb = *work_cb_p;
-
-    uv_after_work_cb after_work_cb;
-    uv_after_work_cb *after_work_cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_after_work_cb");
-    after_work_cb = *after_work_cb_p;
-
-    int res = (int)
-        uv_queue_work(loop, req, work_cb, after_work_cb);
-    lua_pushinteger(L, res);
-    return 1;
-}
 int wrap_uv_read_stop(lua_State *L) {
     uv_stream_t * arg_0;
     uv_stream_t * *arg_0_p =
@@ -2174,6 +2146,7 @@ int wrap_uv_buf_init(lua_State *L);
 int wrap_uv_check_init(lua_State *L);
 int wrap_uv_check_start(lua_State *L);
 int wrap_uv_check_stop(lua_State *L);
+int wrap_uv_cleanup(lua_State *L);
 int wrap_uv_close(lua_State *L);
 int wrap_uv_default_loop(lua_State *L);
 int wrap_uv_err_name(lua_State *L);
@@ -2285,6 +2258,7 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_check_init", wrap_uv_check_init},
         {"uv_check_start", wrap_uv_check_start},
         {"uv_check_stop", wrap_uv_check_stop},
+        {"uv_cleanup", wrap_uv_cleanup},
         {"uv_close", wrap_uv_close},
         {"uv_default_loop", wrap_uv_default_loop},
         {"uv_err_name", wrap_uv_err_name},
