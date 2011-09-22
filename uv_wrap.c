@@ -67,7 +67,7 @@ static void wrap_uv_on_write(uv_write_t *req, int status) {
 
     lua_pushnumber(wr->cb->L, status);
 
-    if (lua_pcall(wr->cb->L, 1, 1, 0) != 0) {
+    if (lua_pcall(wr->cb->L, 1, 0, 0) != 0) {
         printf("wrap_uv_on_write pcall error: %s\n",
                lua_tostring(wr->cb->L, -1));
     }
@@ -138,7 +138,7 @@ static void wrap_uv_on_read(uv_stream_t *stream,
             lua_pushnil(ref->L);
         }
 
-        if (lua_pcall(ref->L, 2, 1, 0) != 0) {
+        if (lua_pcall(ref->L, 2, 0, 0) != 0) {
             printf("wrap_uv_on_read pcall error: %s\n",
                    lua_tostring(ref->L, -1));
         }
@@ -174,7 +174,7 @@ static void wrap_uv_on_listen(uv_stream_t *server, int status) {
 
         lua_pushnumber(ref->L, status);
 
-        if (lua_pcall(ref->L, 1, 1, 0) != 0) {
+        if (lua_pcall(ref->L, 1, 0, 0) != 0) {
             printf("wrap_uv_on_listen pcall error: %s\n",
                    lua_tostring(ref->L, -1));
         }
@@ -230,7 +230,7 @@ static void on_work(uv_work_t *wr) {
 
     lua_rawgeti(cb->L, LUA_REGISTRYINDEX, cb->ref);
 
-    if (lua_pcall(cb->L, 1, 1, 0) != 0) {
+    if (lua_pcall(cb->L, 0, 0, 0) != 0) {
         printf("wrap_uv_on_write pcall error: %s\n",
                lua_tostring(cb->L, -1));
     }
