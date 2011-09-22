@@ -153,8 +153,9 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
 
-    luaL_argcheck(L, stream->data == NULL, 1,
-                  "stream->data is not NULL in wrap_uv_read_start");
+    if (stream->data != NULL) {
+        unref(stream->data);
+    }
 
     stream->data = ref_function(L, 2);
 
