@@ -1190,6 +1190,17 @@ int wrap_uv_is_active(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
+int wrap_uv_is_tty(lua_State *L) {
+    uv_file file;
+    uv_file *file_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_file");
+    file = *file_p;
+
+    int res = (int)
+        uv_is_tty(file);
+    lua_pushinteger(L, res);
+    return 1;
+}
 int wrap_uv_last_error(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
@@ -2203,6 +2214,7 @@ int wrap_uv_ip4_name(lua_State *L);
 int wrap_uv_ip6_addr(lua_State *L);
 int wrap_uv_ip6_name(lua_State *L);
 int wrap_uv_is_active(lua_State *L);
+int wrap_uv_is_tty(lua_State *L);
 int wrap_uv_last_error(lua_State *L);
 int wrap_uv_listen(lua_State *L);
 int wrap_uv_loop_delete(lua_State *L);
@@ -2313,6 +2325,7 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_ip6_addr", wrap_uv_ip6_addr},
         {"uv_ip6_name", wrap_uv_ip6_name},
         {"uv_is_active", wrap_uv_is_active},
+        {"uv_is_tty", wrap_uv_is_tty},
         {"uv_last_error", wrap_uv_last_error},
         {"uv_listen", wrap_uv_listen},
         {"uv_loop_delete", wrap_uv_loop_delete},
