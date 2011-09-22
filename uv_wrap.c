@@ -125,21 +125,23 @@ static void wrap_uv_on_read(uv_stream_t *stream,
                             ssize_t nread,
                             uv_buf_t buf) {
     assert(stream);
+
     lua_ref_t *ref = stream->data;
-    assert(ref);
-    lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
+    if (ref != NULL) {
+        lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
-    lua_pushnumber(ref->L, nread);
+        lua_pushnumber(ref->L, nread);
 
-    if (nread > 0) {
-        lua_pushlstring(ref->L, buf.base, nread);
-    } else {
-        lua_pushnil(ref->L);
-    }
+        if (nread > 0) {
+            lua_pushlstring(ref->L, buf.base, nread);
+        } else {
+            lua_pushnil(ref->L);
+        }
 
-    if (lua_pcall(ref->L, 2, 1, 0) != 0) {
-        printf("wrap_uv_on_read pcall error: %s\n",
-               lua_tostring(ref->L, -1));
+        if (lua_pcall(ref->L, 2, 1, 0) != 0) {
+            printf("wrap_uv_on_read pcall error: %s\n",
+                   lua_tostring(ref->L, -1));
+        }
     }
 
     free(buf.base);
@@ -165,15 +167,17 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
 
 static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     assert(server);
+
     lua_ref_t *ref = server->data;
-    assert(ref);
-    lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
+    if (ref != NULL) {
+        lua_rawgeti(ref->L, LUA_REGISTRYINDEX, ref->ref);
 
-    lua_pushnumber(ref->L, status);
+        lua_pushnumber(ref->L, status);
 
-    if (lua_pcall(ref->L, 1, 1, 0) != 0) {
-        printf("wrap_uv_on_listen pcall error: %s\n",
-               lua_tostring(ref->L, -1));
+        if (lua_pcall(ref->L, 1, 1, 0) != 0) {
+            printf("wrap_uv_on_listen pcall error: %s\n",
+                   lua_tostring(ref->L, -1));
+        }
     }
 }
 
@@ -197,6 +201,10 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     return 1;
 }
 
+// As part of cleanup, de-link the reference from C to any lua
+// callback closure.  Any fired callbacks after cleanup()
+// won't work and lua can GC the callback closure.
+//
 // params: stream
 //
 LUA_API int wrap_uv_cleanup(lua_State *L) {
