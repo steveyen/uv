@@ -197,3 +197,20 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     return 1;
 }
 
+// params: stream
+//
+LUA_API int wrap_uv_cleanup(lua_State *L) {
+    uv_stream_t *stream;
+    uv_stream_t **stream_p =
+        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    stream = *stream_p;
+
+    if (stream->data != NULL) {
+        unref(stream->data);
+    }
+    stream->data = NULL;
+
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
