@@ -201,9 +201,9 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     return 1;
 }
 
-// As part of cleanup, de-link the reference from C to any lua
-// callback closure.  Any fired callbacks after cleanup()
-// won't work and lua can GC the callback closure.
+// As part of cleanup of a stream, de-link the reference from C to
+// the lua callback closure.  Any fired callbacks after cleanup()
+// will become no-op, and lua can also GC appropriately.
 //
 // params: stream
 //
