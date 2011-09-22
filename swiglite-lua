@@ -88,7 +88,7 @@ def arg_from_lua(func_name, arg_type, arg_name, arg_i)
   else
     res = <<-EOF
 #{arg_type.join(' ')} *#{arg_name}_p =
-        luaL_checkudata(L, #{i}, "#{$module_name}.#{type_name}");
+        luaL_checkudata(L, #{i}, "#{type_name}");
     #{arg_name} = *#{arg_name}_p;
 EOF
 
@@ -157,7 +157,7 @@ int <%= wrap_name %>(lua_State *L) {
         printf("return wrap_<%= name %> %p\n", *res_ud);
 %     end
 
-        luaL_newmetatable(L, "<%= $module_name %>.<%= type_name %>");
+        luaL_newmetatable(L, "<%= type_name %>");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -185,7 +185,7 @@ int alloc_<%= type_s %>_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (<%= type %> *) &pp[1];
         printf("return alloc_<%= type_s %>_ptr %p\n", *pp);
-        luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>_ptr");
+        luaL_newmetatable(L, "<%= type_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -194,14 +194,14 @@ int alloc_<%= type_s %>_ptr(lua_State *L) {
 int deref_<%= type_s %>_ptr(lua_State *L) {
     <%= type %> *p;
     <%= type %> * *pp =
-        luaL_checkudata(L, 1, "<%= $module_name %>.<%= type_s %>_ptr");
+        luaL_checkudata(L, 1, "<%= type_s %>_ptr");
     p = *pp;
 
     <%= type %> *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "<%= $module_name %>.<%= type_s %>");
+        luaL_newmetatable(L, "<%= type_s %>");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -219,7 +219,7 @@ EOF
 int <%= cast_f %>(lua_State *L) {
     <%= type %> *p;
     <%= type %> * *pp =
-        luaL_checkudata(L, 1, "<%= $module_name %>.<%= type_s %>_ptr");
+        luaL_checkudata(L, 1, "<%= type_s %>_ptr");
     p = *pp;
 
     <%= cast %> * *res =
@@ -227,7 +227,7 @@ int <%= cast_f %>(lua_State *L) {
     if (res != NULL) {
         *res = (<%= cast %> *) p;
         printf("return <%= cast_f %>_ptr %p\n", *res);
-        luaL_newmetatable(L, "<%= $module_name %>.<%= cast_s %>_ptr");
+        luaL_newmetatable(L, "<%= cast_s %>_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }

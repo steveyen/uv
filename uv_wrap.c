@@ -81,8 +81,7 @@ static void wrap_uv_on_write(uv_write_t *req, int status) {
 //
 LUA_API int wrap_uv_write(lua_State *L) {
     uv_stream_t *stream;
-    uv_stream_t **stream_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    uv_stream_t **stream_p = luaL_checkudata(L, 1, "uv_stream_t_ptr");
     stream = *stream_p;
 
     size_t slen = 0;
@@ -151,8 +150,7 @@ static void wrap_uv_on_read(uv_stream_t *stream,
 //
 LUA_API int wrap_uv_read_start(lua_State *L) {
     uv_stream_t *stream;
-    uv_stream_t **stream_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    uv_stream_t **stream_p = luaL_checkudata(L, 1, "uv_stream_t_ptr");
     stream = *stream_p;
 
     if (stream->data != NULL) {
@@ -185,8 +183,7 @@ static void wrap_uv_on_listen(uv_stream_t *server, int status) {
 //
 LUA_API int wrap_uv_listen(lua_State *L) {
     uv_stream_t *stream;
-    uv_stream_t **stream_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    uv_stream_t **stream_p = luaL_checkudata(L, 1, "uv_stream_t_ptr");
     stream = *stream_p;
 
     int backlog = (int) luaL_checkint(L, 2);
@@ -209,8 +206,7 @@ LUA_API int wrap_uv_listen(lua_State *L) {
 //
 LUA_API int wrap_uv_cleanup(lua_State *L) {
     uv_stream_t *stream;
-    uv_stream_t **stream_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+    uv_stream_t **stream_p = luaL_checkudata(L, 1, "uv_stream_t_ptr");
     stream = *stream_p;
 
     if (stream->data != NULL) {
@@ -252,8 +248,7 @@ static void on_work_after(uv_work_t *wr) {
 //
 LUA_API int wrap_uv_queue_work(lua_State *L) {
     uv_loop_t *loop;
-    uv_loop_t **loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+    uv_loop_t **loop_p = luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
 
     uv_work_t *wr = calloc(1, sizeof(*wr));

@@ -9,13 +9,13 @@
 int wrap_uv_accept(lua_State *L) {
     uv_stream_t * server;
     uv_stream_t * *server_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+        luaL_checkudata(L, 1, "uv_stream_t_ptr");
     server = *server_p;
     printf("  wrap_uv_accept.server: %p\n", server);
 
     uv_stream_t * client;
     uv_stream_t * *client_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_stream_t_ptr");
+        luaL_checkudata(L, 2, "uv_stream_t_ptr");
     client = *client_p;
     printf("  wrap_uv_accept.client: %p\n", client);
 
@@ -27,13 +27,13 @@ int wrap_uv_accept(lua_State *L) {
 int wrap_uv_ares_destroy(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_ares_destroy.arg_0: %p\n", arg_0);
 
     ares_channel channel;
     ares_channel *channel_p =
-        luaL_checkudata(L, 2, "uv_wrap.ares_channel");
+        luaL_checkudata(L, 2, "ares_channel");
     channel = *channel_p;
 
     uv_ares_destroy(arg_0, channel);
@@ -42,19 +42,19 @@ int wrap_uv_ares_destroy(lua_State *L) {
 int wrap_uv_ares_init_options(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_ares_init_options.arg_0: %p\n", arg_0);
 
     ares_channel * channelptr;
     ares_channel * *channelptr_p =
-        luaL_checkudata(L, 2, "uv_wrap.ares_channel_ptr");
+        luaL_checkudata(L, 2, "ares_channel_ptr");
     channelptr = *channelptr_p;
     printf("  wrap_uv_ares_init_options.channelptr: %p\n", channelptr);
 
     struct ares_options * options;
     struct ares_options * *options_p =
-        luaL_checkudata(L, 3, "uv_wrap.ares_options_ptr");
+        luaL_checkudata(L, 3, "ares_options_ptr");
     options = *options_p;
     printf("  wrap_uv_ares_init_options.options: %p\n", options);
 
@@ -69,19 +69,19 @@ int wrap_uv_ares_init_options(lua_State *L) {
 int wrap_uv_async_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_async_init.arg_0: %p\n", arg_0);
 
     uv_async_t * async;
     uv_async_t * *async_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_async_t_ptr");
+        luaL_checkudata(L, 2, "uv_async_t_ptr");
     async = *async_p;
     printf("  wrap_uv_async_init.async: %p\n", async);
 
     uv_async_cb async_cb;
     uv_async_cb *async_cb_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_async_cb");
+        luaL_checkudata(L, 3, "uv_async_cb");
     async_cb = *async_cb_p;
 
     int res = (int)
@@ -92,7 +92,7 @@ int wrap_uv_async_init(lua_State *L) {
 int wrap_uv_async_send(lua_State *L) {
     uv_async_t * async;
     uv_async_t * *async_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_async_t_ptr");
+        luaL_checkudata(L, 1, "uv_async_t_ptr");
     async = *async_p;
     printf("  wrap_uv_async_send.async: %p\n", async);
 
@@ -115,7 +115,7 @@ int wrap_uv_buf_init(lua_State *L) {
     if (res_ud != NULL) {
         *res_ud = res;
 
-        luaL_newmetatable(L, "uv_wrap.uv_buf_t");
+        luaL_newmetatable(L, "uv_buf_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -124,13 +124,13 @@ int wrap_uv_buf_init(lua_State *L) {
 int wrap_uv_check_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_check_init.arg_0: %p\n", arg_0);
 
     uv_check_t * check;
     uv_check_t * *check_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_check_t_ptr");
+        luaL_checkudata(L, 2, "uv_check_t_ptr");
     check = *check_p;
     printf("  wrap_uv_check_init.check: %p\n", check);
 
@@ -142,13 +142,13 @@ int wrap_uv_check_init(lua_State *L) {
 int wrap_uv_check_start(lua_State *L) {
     uv_check_t * check;
     uv_check_t * *check_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_check_t_ptr");
+        luaL_checkudata(L, 1, "uv_check_t_ptr");
     check = *check_p;
     printf("  wrap_uv_check_start.check: %p\n", check);
 
     uv_check_cb cb;
     uv_check_cb *cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_check_cb");
+        luaL_checkudata(L, 2, "uv_check_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -159,7 +159,7 @@ int wrap_uv_check_start(lua_State *L) {
 int wrap_uv_check_stop(lua_State *L) {
     uv_check_t * check;
     uv_check_t * *check_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_check_t_ptr");
+        luaL_checkudata(L, 1, "uv_check_t_ptr");
     check = *check_p;
     printf("  wrap_uv_check_stop.check: %p\n", check);
 
@@ -171,13 +171,13 @@ int wrap_uv_check_stop(lua_State *L) {
 int wrap_uv_close(lua_State *L) {
     uv_handle_t * handle;
     uv_handle_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_handle_t_ptr");
+        luaL_checkudata(L, 1, "uv_handle_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_close.handle: %p\n", handle);
 
     uv_close_cb close_cb;
     uv_close_cb *close_cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_close_cb");
+        luaL_checkudata(L, 2, "uv_close_cb");
     close_cb = *close_cb_p;
 
     uv_close(handle, close_cb);
@@ -192,7 +192,7 @@ int wrap_uv_default_loop(lua_State *L) {
         *res_ud = res;
         printf("return wrap_uv_default_loop %p\n", *res_ud);
 
-        luaL_newmetatable(L, "uv_wrap.uv_loop_t_ptr");
+        luaL_newmetatable(L, "uv_loop_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -201,7 +201,7 @@ int wrap_uv_default_loop(lua_State *L) {
 int wrap_uv_err_name(lua_State *L) {
     uv_err_t err;
     uv_err_t *err_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_err_t");
+        luaL_checkudata(L, 1, "uv_err_t");
     err = *err_p;
 
     char * res = (char *)
@@ -215,7 +215,7 @@ int wrap_uv_exepath(lua_State *L) {
 
     size_t * size;
     size_t * *size_p =
-        luaL_checkudata(L, 2, "uv_wrap.size_t_ptr");
+        luaL_checkudata(L, 2, "size_t_ptr");
     size = *size_p;
     printf("  wrap_uv_exepath.size: %p\n", size);
 
@@ -227,13 +227,13 @@ int wrap_uv_exepath(lua_State *L) {
 int wrap_uv_fs_chmod(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_chmod.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_chmod.req: %p\n", req);
 
@@ -245,7 +245,7 @@ int wrap_uv_fs_chmod(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -256,13 +256,13 @@ int wrap_uv_fs_chmod(lua_State *L) {
 int wrap_uv_fs_chown(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_chown.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_chown.req: %p\n", req);
 
@@ -277,7 +277,7 @@ int wrap_uv_fs_chown(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -288,24 +288,24 @@ int wrap_uv_fs_chown(lua_State *L) {
 int wrap_uv_fs_close(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_close.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_close.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -316,19 +316,19 @@ int wrap_uv_fs_close(lua_State *L) {
 int wrap_uv_fs_fchmod(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_fchmod.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_fchmod.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     int mode;
@@ -336,7 +336,7 @@ int wrap_uv_fs_fchmod(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -347,19 +347,19 @@ int wrap_uv_fs_fchmod(lua_State *L) {
 int wrap_uv_fs_fchown(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_fchown.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_fchown.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     int uid;
@@ -370,7 +370,7 @@ int wrap_uv_fs_fchown(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -381,24 +381,24 @@ int wrap_uv_fs_fchown(lua_State *L) {
 int wrap_uv_fs_fdatasync(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_fdatasync.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_fdatasync.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -409,24 +409,24 @@ int wrap_uv_fs_fdatasync(lua_State *L) {
 int wrap_uv_fs_fstat(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_fstat.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_fstat.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -437,24 +437,24 @@ int wrap_uv_fs_fstat(lua_State *L) {
 int wrap_uv_fs_fsync(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_fsync.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_fsync.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -465,29 +465,29 @@ int wrap_uv_fs_fsync(lua_State *L) {
 int wrap_uv_fs_ftruncate(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_ftruncate.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_ftruncate.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     off_t offset;
     off_t *offset_p =
-        luaL_checkudata(L, 4, "uv_wrap.off_t");
+        luaL_checkudata(L, 4, "off_t");
     offset = *offset_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -498,19 +498,19 @@ int wrap_uv_fs_ftruncate(lua_State *L) {
 int wrap_uv_fs_futime(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_futime.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_futime.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     double atime;
@@ -521,7 +521,7 @@ int wrap_uv_fs_futime(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -532,13 +532,13 @@ int wrap_uv_fs_futime(lua_State *L) {
 int wrap_uv_fs_link(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_link.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_link.req: %p\n", req);
 
@@ -550,7 +550,7 @@ int wrap_uv_fs_link(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -561,13 +561,13 @@ int wrap_uv_fs_link(lua_State *L) {
 int wrap_uv_fs_lstat(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_lstat.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_lstat.req: %p\n", req);
 
@@ -576,7 +576,7 @@ int wrap_uv_fs_lstat(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -587,13 +587,13 @@ int wrap_uv_fs_lstat(lua_State *L) {
 int wrap_uv_fs_mkdir(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_mkdir.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_mkdir.req: %p\n", req);
 
@@ -605,7 +605,7 @@ int wrap_uv_fs_mkdir(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -616,13 +616,13 @@ int wrap_uv_fs_mkdir(lua_State *L) {
 int wrap_uv_fs_open(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_open.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_open.req: %p\n", req);
 
@@ -637,7 +637,7 @@ int wrap_uv_fs_open(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -648,24 +648,24 @@ int wrap_uv_fs_open(lua_State *L) {
 int wrap_uv_fs_read(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_read.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_read.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     void * buf;
     void * *buf_p =
-        luaL_checkudata(L, 4, "uv_wrap.void_ptr");
+        luaL_checkudata(L, 4, "void_ptr");
     buf = *buf_p;
     printf("  wrap_uv_fs_read.buf: %p\n", buf);
 
@@ -674,12 +674,12 @@ int wrap_uv_fs_read(lua_State *L) {
 
     off_t offset;
     off_t *offset_p =
-        luaL_checkudata(L, 6, "uv_wrap.off_t");
+        luaL_checkudata(L, 6, "off_t");
     offset = *offset_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 7, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 7, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -690,13 +690,13 @@ int wrap_uv_fs_read(lua_State *L) {
 int wrap_uv_fs_readdir(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_readdir.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_readdir.req: %p\n", req);
 
@@ -708,7 +708,7 @@ int wrap_uv_fs_readdir(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -719,13 +719,13 @@ int wrap_uv_fs_readdir(lua_State *L) {
 int wrap_uv_fs_readlink(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_readlink.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_readlink.req: %p\n", req);
 
@@ -734,7 +734,7 @@ int wrap_uv_fs_readlink(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -745,13 +745,13 @@ int wrap_uv_fs_readlink(lua_State *L) {
 int wrap_uv_fs_rename(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_rename.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_rename.req: %p\n", req);
 
@@ -763,7 +763,7 @@ int wrap_uv_fs_rename(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 5, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 5, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -774,7 +774,7 @@ int wrap_uv_fs_rename(lua_State *L) {
 int wrap_uv_fs_req_cleanup(lua_State *L) {
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 1, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_req_cleanup.req: %p\n", req);
 
@@ -784,13 +784,13 @@ int wrap_uv_fs_req_cleanup(lua_State *L) {
 int wrap_uv_fs_rmdir(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_rmdir.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_rmdir.req: %p\n", req);
 
@@ -799,7 +799,7 @@ int wrap_uv_fs_rmdir(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -810,29 +810,29 @@ int wrap_uv_fs_rmdir(lua_State *L) {
 int wrap_uv_fs_sendfile(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_sendfile.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_sendfile.req: %p\n", req);
 
     uv_file out_fd;
     uv_file *out_fd_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     out_fd = *out_fd_p;
 
     uv_file in_fd;
     uv_file *in_fd_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_file");
+        luaL_checkudata(L, 4, "uv_file");
     in_fd = *in_fd_p;
 
     off_t in_offset;
     off_t *in_offset_p =
-        luaL_checkudata(L, 5, "uv_wrap.off_t");
+        luaL_checkudata(L, 5, "off_t");
     in_offset = *in_offset_p;
 
     size_t length;
@@ -840,7 +840,7 @@ int wrap_uv_fs_sendfile(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 7, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 7, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -851,13 +851,13 @@ int wrap_uv_fs_sendfile(lua_State *L) {
 int wrap_uv_fs_stat(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_stat.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_stat.req: %p\n", req);
 
@@ -866,7 +866,7 @@ int wrap_uv_fs_stat(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -877,13 +877,13 @@ int wrap_uv_fs_stat(lua_State *L) {
 int wrap_uv_fs_symlink(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_symlink.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_symlink.req: %p\n", req);
 
@@ -898,7 +898,7 @@ int wrap_uv_fs_symlink(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -909,13 +909,13 @@ int wrap_uv_fs_symlink(lua_State *L) {
 int wrap_uv_fs_unlink(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_unlink.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_unlink.req: %p\n", req);
 
@@ -924,7 +924,7 @@ int wrap_uv_fs_unlink(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 4, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -935,13 +935,13 @@ int wrap_uv_fs_unlink(lua_State *L) {
 int wrap_uv_fs_utime(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_utime.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_utime.req: %p\n", req);
 
@@ -956,7 +956,7 @@ int wrap_uv_fs_utime(lua_State *L) {
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 6, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 6, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -967,24 +967,24 @@ int wrap_uv_fs_utime(lua_State *L) {
 int wrap_uv_fs_write(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     loop = *loop_p;
     printf("  wrap_uv_fs_write.loop: %p\n", loop);
 
     uv_fs_t * req;
     uv_fs_t * *req_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_fs_t_ptr");
+        luaL_checkudata(L, 2, "uv_fs_t_ptr");
     req = *req_p;
     printf("  wrap_uv_fs_write.req: %p\n", req);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     file = *file_p;
 
     void * buf;
     void * *buf_p =
-        luaL_checkudata(L, 4, "uv_wrap.void_ptr");
+        luaL_checkudata(L, 4, "void_ptr");
     buf = *buf_p;
     printf("  wrap_uv_fs_write.buf: %p\n", buf);
 
@@ -993,12 +993,12 @@ int wrap_uv_fs_write(lua_State *L) {
 
     off_t offset;
     off_t *offset_p =
-        luaL_checkudata(L, 6, "uv_wrap.off_t");
+        luaL_checkudata(L, 6, "off_t");
     offset = *offset_p;
 
     uv_fs_cb cb;
     uv_fs_cb *cb_p =
-        luaL_checkudata(L, 7, "uv_wrap.uv_fs_cb");
+        luaL_checkudata(L, 7, "uv_fs_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1009,19 +1009,19 @@ int wrap_uv_fs_write(lua_State *L) {
 int wrap_uv_getaddrinfo(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_getaddrinfo.arg_0: %p\n", arg_0);
 
     uv_getaddrinfo_t * handle;
     uv_getaddrinfo_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_getaddrinfo_t_ptr");
+        luaL_checkudata(L, 2, "uv_getaddrinfo_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_getaddrinfo.handle: %p\n", handle);
 
     uv_getaddrinfo_cb getaddrinfo_cb;
     uv_getaddrinfo_cb *getaddrinfo_cb_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_getaddrinfo_cb");
+        luaL_checkudata(L, 3, "uv_getaddrinfo_cb");
     getaddrinfo_cb = *getaddrinfo_cb_p;
 
     char * node;
@@ -1032,7 +1032,7 @@ int wrap_uv_getaddrinfo(lua_State *L) {
 
     struct addrinfo * hints;
     struct addrinfo * *hints_p =
-        luaL_checkudata(L, 6, "uv_wrap.addrinfo_ptr");
+        luaL_checkudata(L, 6, "addrinfo_ptr");
     hints = *hints_p;
     printf("  wrap_uv_getaddrinfo.hints: %p\n", hints);
 
@@ -1049,7 +1049,7 @@ int wrap_uv_hrtime(lua_State *L) {
     if (res_ud != NULL) {
         *res_ud = res;
 
-        luaL_newmetatable(L, "uv_wrap.uint64_t");
+        luaL_newmetatable(L, "uint64_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1058,13 +1058,13 @@ int wrap_uv_hrtime(lua_State *L) {
 int wrap_uv_idle_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_idle_init.arg_0: %p\n", arg_0);
 
     uv_idle_t * idle;
     uv_idle_t * *idle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_idle_t_ptr");
+        luaL_checkudata(L, 2, "uv_idle_t_ptr");
     idle = *idle_p;
     printf("  wrap_uv_idle_init.idle: %p\n", idle);
 
@@ -1076,13 +1076,13 @@ int wrap_uv_idle_init(lua_State *L) {
 int wrap_uv_idle_start(lua_State *L) {
     uv_idle_t * idle;
     uv_idle_t * *idle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_idle_t_ptr");
+        luaL_checkudata(L, 1, "uv_idle_t_ptr");
     idle = *idle_p;
     printf("  wrap_uv_idle_start.idle: %p\n", idle);
 
     uv_idle_cb cb;
     uv_idle_cb *cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_idle_cb");
+        luaL_checkudata(L, 2, "uv_idle_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1093,7 +1093,7 @@ int wrap_uv_idle_start(lua_State *L) {
 int wrap_uv_idle_stop(lua_State *L) {
     uv_idle_t * idle;
     uv_idle_t * *idle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_idle_t_ptr");
+        luaL_checkudata(L, 1, "uv_idle_t_ptr");
     idle = *idle_p;
     printf("  wrap_uv_idle_stop.idle: %p\n", idle);
 
@@ -1116,7 +1116,7 @@ int wrap_uv_ip4_addr(lua_State *L) {
     if (res_ud != NULL) {
         *res_ud = res;
 
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in");
+        luaL_newmetatable(L, "sockaddr_in");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1125,7 +1125,7 @@ int wrap_uv_ip4_addr(lua_State *L) {
 int wrap_uv_ip4_name(lua_State *L) {
     struct sockaddr_in * src;
     struct sockaddr_in * *src_p =
-        luaL_checkudata(L, 1, "uv_wrap.sockaddr_in_ptr");
+        luaL_checkudata(L, 1, "sockaddr_in_ptr");
     src = *src_p;
     printf("  wrap_uv_ip4_name.src: %p\n", src);
 
@@ -1154,7 +1154,7 @@ int wrap_uv_ip6_addr(lua_State *L) {
     if (res_ud != NULL) {
         *res_ud = res;
 
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in6");
+        luaL_newmetatable(L, "sockaddr_in6");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1163,7 +1163,7 @@ int wrap_uv_ip6_addr(lua_State *L) {
 int wrap_uv_ip6_name(lua_State *L) {
     struct sockaddr_in6 * src;
     struct sockaddr_in6 * *src_p =
-        luaL_checkudata(L, 1, "uv_wrap.sockaddr_in6_ptr");
+        luaL_checkudata(L, 1, "sockaddr_in6_ptr");
     src = *src_p;
     printf("  wrap_uv_ip6_name.src: %p\n", src);
 
@@ -1181,7 +1181,7 @@ int wrap_uv_ip6_name(lua_State *L) {
 int wrap_uv_is_active(lua_State *L) {
     uv_handle_t * handle;
     uv_handle_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_handle_t_ptr");
+        luaL_checkudata(L, 1, "uv_handle_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_is_active.handle: %p\n", handle);
 
@@ -1193,7 +1193,7 @@ int wrap_uv_is_active(lua_State *L) {
 int wrap_uv_is_tty(lua_State *L) {
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_file");
+        luaL_checkudata(L, 1, "uv_file");
     file = *file_p;
 
     int res = (int)
@@ -1204,7 +1204,7 @@ int wrap_uv_is_tty(lua_State *L) {
 int wrap_uv_last_error(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_last_error.arg_0: %p\n", arg_0);
 
@@ -1215,7 +1215,7 @@ int wrap_uv_last_error(lua_State *L) {
     if (res_ud != NULL) {
         *res_ud = res;
 
-        luaL_newmetatable(L, "uv_wrap.uv_err_t");
+        luaL_newmetatable(L, "uv_err_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1224,7 +1224,7 @@ int wrap_uv_last_error(lua_State *L) {
 int wrap_uv_loop_delete(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_loop_delete.arg_0: %p\n", arg_0);
 
@@ -1240,7 +1240,7 @@ int wrap_uv_loop_new(lua_State *L) {
         *res_ud = res;
         printf("return wrap_uv_loop_new %p\n", *res_ud);
 
-        luaL_newmetatable(L, "uv_wrap.uv_loop_t_ptr");
+        luaL_newmetatable(L, "uv_loop_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1249,7 +1249,7 @@ int wrap_uv_loop_new(lua_State *L) {
 int wrap_uv_now(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_now.arg_0: %p\n", arg_0);
 
@@ -1261,7 +1261,7 @@ int wrap_uv_now(lua_State *L) {
 int wrap_uv_pipe_bind(lua_State *L) {
     uv_pipe_t * handle;
     uv_pipe_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 1, "uv_pipe_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_pipe_bind.handle: %p\n", handle);
 
@@ -1276,13 +1276,13 @@ int wrap_uv_pipe_bind(lua_State *L) {
 int wrap_uv_pipe_connect(lua_State *L) {
     uv_connect_t * req;
     uv_connect_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_connect_t_ptr");
+        luaL_checkudata(L, 1, "uv_connect_t_ptr");
     req = *req_p;
     printf("  wrap_uv_pipe_connect.req: %p\n", req);
 
     uv_pipe_t * handle;
     uv_pipe_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 2, "uv_pipe_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_pipe_connect.handle: %p\n", handle);
 
@@ -1291,7 +1291,7 @@ int wrap_uv_pipe_connect(lua_State *L) {
 
     uv_connect_cb cb;
     uv_connect_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_connect_cb");
+        luaL_checkudata(L, 4, "uv_connect_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1302,13 +1302,13 @@ int wrap_uv_pipe_connect(lua_State *L) {
 int wrap_uv_pipe_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_pipe_init.arg_0: %p\n", arg_0);
 
     uv_pipe_t * handle;
     uv_pipe_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 2, "uv_pipe_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_pipe_init.handle: %p\n", handle);
 
@@ -1320,13 +1320,13 @@ int wrap_uv_pipe_init(lua_State *L) {
 int wrap_uv_pipe_open(lua_State *L) {
     uv_pipe_t * arg_0;
     uv_pipe_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 1, "uv_pipe_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_pipe_open.arg_0: %p\n", arg_0);
 
     uv_file file;
     uv_file *file_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_file");
+        luaL_checkudata(L, 2, "uv_file");
     file = *file_p;
 
     uv_pipe_open(arg_0, file);
@@ -1335,13 +1335,13 @@ int wrap_uv_pipe_open(lua_State *L) {
 int wrap_uv_prepare_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_prepare_init.arg_0: %p\n", arg_0);
 
     uv_prepare_t * prepare;
     uv_prepare_t * *prepare_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_prepare_t_ptr");
+        luaL_checkudata(L, 2, "uv_prepare_t_ptr");
     prepare = *prepare_p;
     printf("  wrap_uv_prepare_init.prepare: %p\n", prepare);
 
@@ -1353,13 +1353,13 @@ int wrap_uv_prepare_init(lua_State *L) {
 int wrap_uv_prepare_start(lua_State *L) {
     uv_prepare_t * prepare;
     uv_prepare_t * *prepare_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_prepare_t_ptr");
+        luaL_checkudata(L, 1, "uv_prepare_t_ptr");
     prepare = *prepare_p;
     printf("  wrap_uv_prepare_start.prepare: %p\n", prepare);
 
     uv_prepare_cb cb;
     uv_prepare_cb *cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_prepare_cb");
+        luaL_checkudata(L, 2, "uv_prepare_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1370,7 +1370,7 @@ int wrap_uv_prepare_start(lua_State *L) {
 int wrap_uv_prepare_stop(lua_State *L) {
     uv_prepare_t * prepare;
     uv_prepare_t * *prepare_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_prepare_t_ptr");
+        luaL_checkudata(L, 1, "uv_prepare_t_ptr");
     prepare = *prepare_p;
     printf("  wrap_uv_prepare_stop.prepare: %p\n", prepare);
 
@@ -1382,7 +1382,7 @@ int wrap_uv_prepare_stop(lua_State *L) {
 int wrap_uv_process_kill(lua_State *L) {
     uv_process_t * arg_0;
     uv_process_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_process_t_ptr");
+        luaL_checkudata(L, 1, "uv_process_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_process_kill.arg_0: %p\n", arg_0);
 
@@ -1397,7 +1397,7 @@ int wrap_uv_process_kill(lua_State *L) {
 int wrap_uv_read_stop(lua_State *L) {
     uv_stream_t * arg_0;
     uv_stream_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
+        luaL_checkudata(L, 1, "uv_stream_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_read_stop.arg_0: %p\n", arg_0);
 
@@ -1409,7 +1409,7 @@ int wrap_uv_read_stop(lua_State *L) {
 int wrap_uv_ref(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_ref.arg_0: %p\n", arg_0);
 
@@ -1419,7 +1419,7 @@ int wrap_uv_ref(lua_State *L) {
 int wrap_uv_run(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_run.arg_0: %p\n", arg_0);
 
@@ -1431,19 +1431,19 @@ int wrap_uv_run(lua_State *L) {
 int wrap_uv_shutdown(lua_State *L) {
     uv_shutdown_t * req;
     uv_shutdown_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_shutdown_t_ptr");
+        luaL_checkudata(L, 1, "uv_shutdown_t_ptr");
     req = *req_p;
     printf("  wrap_uv_shutdown.req: %p\n", req);
 
     uv_stream_t * handle;
     uv_stream_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_stream_t_ptr");
+        luaL_checkudata(L, 2, "uv_stream_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_shutdown.handle: %p\n", handle);
 
     uv_shutdown_cb cb;
     uv_shutdown_cb *cb_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_shutdown_cb");
+        luaL_checkudata(L, 3, "uv_shutdown_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1454,19 +1454,19 @@ int wrap_uv_shutdown(lua_State *L) {
 int wrap_uv_spawn(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_spawn.arg_0: %p\n", arg_0);
 
     uv_process_t * arg_1;
     uv_process_t * *arg_1_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_process_t_ptr");
+        luaL_checkudata(L, 2, "uv_process_t_ptr");
     arg_1 = *arg_1_p;
     printf("  wrap_uv_spawn.arg_1: %p\n", arg_1);
 
     uv_process_options_t options;
     uv_process_options_t *options_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_process_options_t");
+        luaL_checkudata(L, 3, "uv_process_options_t");
     options = *options_p;
 
     int res = (int)
@@ -1477,7 +1477,7 @@ int wrap_uv_spawn(lua_State *L) {
 int wrap_uv_std_handle(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_std_handle.arg_0: %p\n", arg_0);
 
@@ -1492,7 +1492,7 @@ int wrap_uv_std_handle(lua_State *L) {
         *res_ud = res;
         printf("return wrap_uv_std_handle %p\n", *res_ud);
 
-        luaL_newmetatable(L, "uv_wrap.uv_stream_t_ptr");
+        luaL_newmetatable(L, "uv_stream_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1501,7 +1501,7 @@ int wrap_uv_std_handle(lua_State *L) {
 int wrap_uv_strerror(lua_State *L) {
     uv_err_t err;
     uv_err_t *err_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_err_t");
+        luaL_checkudata(L, 1, "uv_err_t");
     err = *err_p;
 
     char * res = (char *)
@@ -1512,13 +1512,13 @@ int wrap_uv_strerror(lua_State *L) {
 int wrap_uv_tcp_bind(lua_State *L) {
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_bind.handle: %p\n", handle);
 
     struct sockaddr_in arg_1;
     struct sockaddr_in *arg_1_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_in");
+        luaL_checkudata(L, 2, "sockaddr_in");
     arg_1 = *arg_1_p;
 
     int res = (int)
@@ -1529,13 +1529,13 @@ int wrap_uv_tcp_bind(lua_State *L) {
 int wrap_uv_tcp_bind6(lua_State *L) {
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_bind6.handle: %p\n", handle);
 
     struct sockaddr_in6 arg_1;
     struct sockaddr_in6 *arg_1_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_in6");
+        luaL_checkudata(L, 2, "sockaddr_in6");
     arg_1 = *arg_1_p;
 
     int res = (int)
@@ -1546,24 +1546,24 @@ int wrap_uv_tcp_bind6(lua_State *L) {
 int wrap_uv_tcp_connect(lua_State *L) {
     uv_connect_t * req;
     uv_connect_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_connect_t_ptr");
+        luaL_checkudata(L, 1, "uv_connect_t_ptr");
     req = *req_p;
     printf("  wrap_uv_tcp_connect.req: %p\n", req);
 
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 2, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_connect.handle: %p\n", handle);
 
     struct sockaddr_in address;
     struct sockaddr_in *address_p =
-        luaL_checkudata(L, 3, "uv_wrap.sockaddr_in");
+        luaL_checkudata(L, 3, "sockaddr_in");
     address = *address_p;
 
     uv_connect_cb cb;
     uv_connect_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_connect_cb");
+        luaL_checkudata(L, 4, "uv_connect_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1574,24 +1574,24 @@ int wrap_uv_tcp_connect(lua_State *L) {
 int wrap_uv_tcp_connect6(lua_State *L) {
     uv_connect_t * req;
     uv_connect_t * *req_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_connect_t_ptr");
+        luaL_checkudata(L, 1, "uv_connect_t_ptr");
     req = *req_p;
     printf("  wrap_uv_tcp_connect6.req: %p\n", req);
 
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 2, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_connect6.handle: %p\n", handle);
 
     struct sockaddr_in6 address;
     struct sockaddr_in6 *address_p =
-        luaL_checkudata(L, 3, "uv_wrap.sockaddr_in6");
+        luaL_checkudata(L, 3, "sockaddr_in6");
     address = *address_p;
 
     uv_connect_cb cb;
     uv_connect_cb *cb_p =
-        luaL_checkudata(L, 4, "uv_wrap.uv_connect_cb");
+        luaL_checkudata(L, 4, "uv_connect_cb");
     cb = *cb_p;
 
     int res = (int)
@@ -1602,19 +1602,19 @@ int wrap_uv_tcp_connect6(lua_State *L) {
 int wrap_uv_tcp_getpeername(lua_State *L) {
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_getpeername.handle: %p\n", handle);
 
     struct sockaddr * name;
     struct sockaddr * *name_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_ptr");
+        luaL_checkudata(L, 2, "sockaddr_ptr");
     name = *name_p;
     printf("  wrap_uv_tcp_getpeername.name: %p\n", name);
 
     int * namelen;
     int * *namelen_p =
-        luaL_checkudata(L, 3, "uv_wrap.int_ptr");
+        luaL_checkudata(L, 3, "int_ptr");
     namelen = *namelen_p;
     printf("  wrap_uv_tcp_getpeername.namelen: %p\n", namelen);
 
@@ -1626,19 +1626,19 @@ int wrap_uv_tcp_getpeername(lua_State *L) {
 int wrap_uv_tcp_getsockname(lua_State *L) {
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_getsockname.handle: %p\n", handle);
 
     struct sockaddr * name;
     struct sockaddr * *name_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_ptr");
+        luaL_checkudata(L, 2, "sockaddr_ptr");
     name = *name_p;
     printf("  wrap_uv_tcp_getsockname.name: %p\n", name);
 
     int * namelen;
     int * *namelen_p =
-        luaL_checkudata(L, 3, "uv_wrap.int_ptr");
+        luaL_checkudata(L, 3, "int_ptr");
     namelen = *namelen_p;
     printf("  wrap_uv_tcp_getsockname.namelen: %p\n", namelen);
 
@@ -1650,13 +1650,13 @@ int wrap_uv_tcp_getsockname(lua_State *L) {
 int wrap_uv_tcp_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_tcp_init.arg_0: %p\n", arg_0);
 
     uv_tcp_t * handle;
     uv_tcp_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 2, "uv_tcp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_tcp_init.handle: %p\n", handle);
 
@@ -1668,7 +1668,7 @@ int wrap_uv_tcp_init(lua_State *L) {
 int wrap_uv_timer_again(lua_State *L) {
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 1, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_again.timer: %p\n", timer);
 
@@ -1680,7 +1680,7 @@ int wrap_uv_timer_again(lua_State *L) {
 int wrap_uv_timer_get_repeat(lua_State *L) {
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 1, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_get_repeat.timer: %p\n", timer);
 
@@ -1692,13 +1692,13 @@ int wrap_uv_timer_get_repeat(lua_State *L) {
 int wrap_uv_timer_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_timer_init.arg_0: %p\n", arg_0);
 
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 2, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_init.timer: %p\n", timer);
 
@@ -1710,7 +1710,7 @@ int wrap_uv_timer_init(lua_State *L) {
 int wrap_uv_timer_set_repeat(lua_State *L) {
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 1, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_set_repeat.timer: %p\n", timer);
 
@@ -1723,13 +1723,13 @@ int wrap_uv_timer_set_repeat(lua_State *L) {
 int wrap_uv_timer_start(lua_State *L) {
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 1, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_start.timer: %p\n", timer);
 
     uv_timer_cb cb;
     uv_timer_cb *cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_timer_cb");
+        luaL_checkudata(L, 2, "uv_timer_cb");
     cb = *cb_p;
 
     int64_t timeout;
@@ -1746,7 +1746,7 @@ int wrap_uv_timer_start(lua_State *L) {
 int wrap_uv_timer_stop(lua_State *L) {
     uv_timer_t * timer;
     uv_timer_t * *timer_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_timer_t_ptr");
+        luaL_checkudata(L, 1, "uv_timer_t_ptr");
     timer = *timer_p;
     printf("  wrap_uv_timer_stop.timer: %p\n", timer);
 
@@ -1758,19 +1758,19 @@ int wrap_uv_timer_stop(lua_State *L) {
 int wrap_uv_tty_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_tty_init.arg_0: %p\n", arg_0);
 
     uv_tty_t * arg_1;
     uv_tty_t * *arg_1_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_tty_t_ptr");
+        luaL_checkudata(L, 2, "uv_tty_t_ptr");
     arg_1 = *arg_1_p;
     printf("  wrap_uv_tty_init.arg_1: %p\n", arg_1);
 
     uv_file fd;
     uv_file *fd_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_file");
+        luaL_checkudata(L, 3, "uv_file");
     fd = *fd_p;
 
     int res = (int)
@@ -1781,7 +1781,7 @@ int wrap_uv_tty_init(lua_State *L) {
 int wrap_uv_tty_set_mode(lua_State *L) {
     uv_tty_t * arg_0;
     uv_tty_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tty_t_ptr");
+        luaL_checkudata(L, 1, "uv_tty_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_tty_set_mode.arg_0: %p\n", arg_0);
 
@@ -1796,18 +1796,18 @@ int wrap_uv_tty_set_mode(lua_State *L) {
 int wrap_uv_udp_bind(lua_State *L) {
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_bind.handle: %p\n", handle);
 
     struct sockaddr_in addr;
     struct sockaddr_in *addr_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_in");
+        luaL_checkudata(L, 2, "sockaddr_in");
     addr = *addr_p;
 
     unsigned flags;
     unsigned *flags_p =
-        luaL_checkudata(L, 3, "uv_wrap.unsigned");
+        luaL_checkudata(L, 3, "unsigned");
     flags = *flags_p;
 
     int res = (int)
@@ -1818,18 +1818,18 @@ int wrap_uv_udp_bind(lua_State *L) {
 int wrap_uv_udp_bind6(lua_State *L) {
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_bind6.handle: %p\n", handle);
 
     struct sockaddr_in6 addr;
     struct sockaddr_in6 *addr_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_in6");
+        luaL_checkudata(L, 2, "sockaddr_in6");
     addr = *addr_p;
 
     unsigned flags;
     unsigned *flags_p =
-        luaL_checkudata(L, 3, "uv_wrap.unsigned");
+        luaL_checkudata(L, 3, "unsigned");
     flags = *flags_p;
 
     int res = (int)
@@ -1840,19 +1840,19 @@ int wrap_uv_udp_bind6(lua_State *L) {
 int wrap_uv_udp_getsockname(lua_State *L) {
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_getsockname.handle: %p\n", handle);
 
     struct sockaddr * name;
     struct sockaddr * *name_p =
-        luaL_checkudata(L, 2, "uv_wrap.sockaddr_ptr");
+        luaL_checkudata(L, 2, "sockaddr_ptr");
     name = *name_p;
     printf("  wrap_uv_udp_getsockname.name: %p\n", name);
 
     int * namelen;
     int * *namelen_p =
-        luaL_checkudata(L, 3, "uv_wrap.int_ptr");
+        luaL_checkudata(L, 3, "int_ptr");
     namelen = *namelen_p;
     printf("  wrap_uv_udp_getsockname.namelen: %p\n", namelen);
 
@@ -1864,13 +1864,13 @@ int wrap_uv_udp_getsockname(lua_State *L) {
 int wrap_uv_udp_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_udp_init.arg_0: %p\n", arg_0);
 
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 2, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_init.handle: %p\n", handle);
 
@@ -1882,18 +1882,18 @@ int wrap_uv_udp_init(lua_State *L) {
 int wrap_uv_udp_recv_start(lua_State *L) {
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_recv_start.handle: %p\n", handle);
 
     uv_alloc_cb alloc_cb;
     uv_alloc_cb *alloc_cb_p =
-        luaL_checkudata(L, 2, "uv_wrap.uv_alloc_cb");
+        luaL_checkudata(L, 2, "uv_alloc_cb");
     alloc_cb = *alloc_cb_p;
 
     uv_udp_recv_cb recv_cb;
     uv_udp_recv_cb *recv_cb_p =
-        luaL_checkudata(L, 3, "uv_wrap.uv_udp_recv_cb");
+        luaL_checkudata(L, 3, "uv_udp_recv_cb");
     recv_cb = *recv_cb_p;
 
     int res = (int)
@@ -1904,7 +1904,7 @@ int wrap_uv_udp_recv_start(lua_State *L) {
 int wrap_uv_udp_recv_stop(lua_State *L) {
     uv_udp_t * handle;
     uv_udp_t * *handle_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     handle = *handle_p;
     printf("  wrap_uv_udp_recv_stop.handle: %p\n", handle);
 
@@ -1916,7 +1916,7 @@ int wrap_uv_udp_recv_stop(lua_State *L) {
 int wrap_uv_unref(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_unref.arg_0: %p\n", arg_0);
 
@@ -1926,7 +1926,7 @@ int wrap_uv_unref(lua_State *L) {
 int wrap_uv_update_time(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
-        luaL_checkudata(L, 1, "uv_wrap.uv_loop_t_ptr");
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
     arg_0 = *arg_0_p;
     printf("  wrap_uv_update_time.arg_0: %p\n", arg_0);
 
@@ -1939,7 +1939,7 @@ int alloc_sockaddr_in_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (struct sockaddr_in *) &pp[1];
         printf("return alloc_sockaddr_in_ptr %p\n", *pp);
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in_ptr");
+        luaL_newmetatable(L, "sockaddr_in_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1948,14 +1948,14 @@ int alloc_sockaddr_in_ptr(lua_State *L) {
 int deref_sockaddr_in_ptr(lua_State *L) {
     struct sockaddr_in *p;
     struct sockaddr_in * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.sockaddr_in_ptr");
+        luaL_checkudata(L, 1, "sockaddr_in_ptr");
     p = *pp;
 
     struct sockaddr_in *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in");
+        luaL_newmetatable(L, "sockaddr_in");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1967,7 +1967,7 @@ int alloc_sockaddr_in6_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (struct sockaddr_in6 *) &pp[1];
         printf("return alloc_sockaddr_in6_ptr %p\n", *pp);
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in6_ptr");
+        luaL_newmetatable(L, "sockaddr_in6_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1976,14 +1976,14 @@ int alloc_sockaddr_in6_ptr(lua_State *L) {
 int deref_sockaddr_in6_ptr(lua_State *L) {
     struct sockaddr_in6 *p;
     struct sockaddr_in6 * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.sockaddr_in6_ptr");
+        luaL_checkudata(L, 1, "sockaddr_in6_ptr");
     p = *pp;
 
     struct sockaddr_in6 *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "uv_wrap.sockaddr_in6");
+        luaL_newmetatable(L, "sockaddr_in6");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -1995,7 +1995,7 @@ int alloc_uv_pipe_t_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (uv_pipe_t *) &pp[1];
         printf("return alloc_uv_pipe_t_ptr %p\n", *pp);
-        luaL_newmetatable(L, "uv_wrap.uv_pipe_t_ptr");
+        luaL_newmetatable(L, "uv_pipe_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2004,14 +2004,14 @@ int alloc_uv_pipe_t_ptr(lua_State *L) {
 int deref_uv_pipe_t_ptr(lua_State *L) {
     uv_pipe_t *p;
     uv_pipe_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 1, "uv_pipe_t_ptr");
     p = *pp;
 
     uv_pipe_t *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "uv_wrap.uv_pipe_t");
+        luaL_newmetatable(L, "uv_pipe_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2020,7 +2020,7 @@ int deref_uv_pipe_t_ptr(lua_State *L) {
 int cast_uv_pipe_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     uv_pipe_t *p;
     uv_pipe_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_pipe_t_ptr");
+        luaL_checkudata(L, 1, "uv_pipe_t_ptr");
     p = *pp;
 
     uv_stream_t * *res =
@@ -2028,7 +2028,7 @@ int cast_uv_pipe_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     if (res != NULL) {
         *res = (uv_stream_t *) p;
         printf("return cast_uv_pipe_t_ptr_to_uv_stream_t_ptr_ptr %p\n", *res);
-        luaL_newmetatable(L, "uv_wrap.uv_stream_t_ptr");
+        luaL_newmetatable(L, "uv_stream_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2040,7 +2040,7 @@ int alloc_uv_tcp_t_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (uv_tcp_t *) &pp[1];
         printf("return alloc_uv_tcp_t_ptr %p\n", *pp);
-        luaL_newmetatable(L, "uv_wrap.uv_tcp_t_ptr");
+        luaL_newmetatable(L, "uv_tcp_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2049,14 +2049,14 @@ int alloc_uv_tcp_t_ptr(lua_State *L) {
 int deref_uv_tcp_t_ptr(lua_State *L) {
     uv_tcp_t *p;
     uv_tcp_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     p = *pp;
 
     uv_tcp_t *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "uv_wrap.uv_tcp_t");
+        luaL_newmetatable(L, "uv_tcp_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2065,7 +2065,7 @@ int deref_uv_tcp_t_ptr(lua_State *L) {
 int cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     uv_tcp_t *p;
     uv_tcp_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_tcp_t_ptr");
+        luaL_checkudata(L, 1, "uv_tcp_t_ptr");
     p = *pp;
 
     uv_stream_t * *res =
@@ -2073,7 +2073,7 @@ int cast_uv_tcp_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     if (res != NULL) {
         *res = (uv_stream_t *) p;
         printf("return cast_uv_tcp_t_ptr_to_uv_stream_t_ptr_ptr %p\n", *res);
-        luaL_newmetatable(L, "uv_wrap.uv_stream_t_ptr");
+        luaL_newmetatable(L, "uv_stream_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2085,7 +2085,7 @@ int alloc_uv_udp_t_ptr(lua_State *L) {
     if (pp != NULL) {
         *pp = (uv_udp_t *) &pp[1];
         printf("return alloc_uv_udp_t_ptr %p\n", *pp);
-        luaL_newmetatable(L, "uv_wrap.uv_udp_t_ptr");
+        luaL_newmetatable(L, "uv_udp_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2094,14 +2094,14 @@ int alloc_uv_udp_t_ptr(lua_State *L) {
 int deref_uv_udp_t_ptr(lua_State *L) {
     uv_udp_t *p;
     uv_udp_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     p = *pp;
 
     uv_udp_t *res =
         lua_newuserdata(L, sizeof(*res));
     if (res != NULL) {
         *res = *p;
-        luaL_newmetatable(L, "uv_wrap.uv_udp_t");
+        luaL_newmetatable(L, "uv_udp_t");
         lua_setmetatable(L, -2);
         return 1;
     }
@@ -2110,7 +2110,7 @@ int deref_uv_udp_t_ptr(lua_State *L) {
 int cast_uv_udp_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     uv_udp_t *p;
     uv_udp_t * *pp =
-        luaL_checkudata(L, 1, "uv_wrap.uv_udp_t_ptr");
+        luaL_checkudata(L, 1, "uv_udp_t_ptr");
     p = *pp;
 
     uv_stream_t * *res =
@@ -2118,7 +2118,7 @@ int cast_uv_udp_t_ptr_to_uv_stream_t_ptr(lua_State *L) {
     if (res != NULL) {
         *res = (uv_stream_t *) p;
         printf("return cast_uv_udp_t_ptr_to_uv_stream_t_ptr_ptr %p\n", *res);
-        luaL_newmetatable(L, "uv_wrap.uv_stream_t_ptr");
+        luaL_newmetatable(L, "uv_stream_t_ptr");
         lua_setmetatable(L, -2);
         return 1;
     }
