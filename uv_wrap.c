@@ -12,7 +12,7 @@
 #include "uv.h"
 
 // Holds a reference to a lua object in the LUA_REGISTRYINDEX.
-// E.g., holding a lua function for callbacks from C to lua.
+// E.g., holding a lua function/closure for callbacks from C to lua.
 //
 typedef struct  {
     lua_State *L;
@@ -44,7 +44,7 @@ static lua_ref_t *ref(lua_State *L) { // Grabs stack's top item.
     return NULL;
 }
 
-// Grabs a reference to the lua function at the index.
+// Grabs a reference to the lua function/closure at the index.
 //
 static lua_ref_t *ref_function(lua_State *L, int index) {
     luaL_checktype(L, index, LUA_TFUNCTION);
@@ -75,7 +75,7 @@ static void wrap_uv_on_write(uv_write_t *req, int status) {
     free(wr);
 }
 
-// params: stream, string, callback(status)
+// params: stream, stringToWrite, afterWriteCallback(status)
 //
 LUA_API int wrap_uv_write(lua_State *L) {
     uv_stream_t *stream;
@@ -141,7 +141,7 @@ static void wrap_uv_on_read(uv_stream_t *stream,
     free(buf.base);
 }
 
-// params: stream, callback(nread, string)
+// params: stream, afterReadCallback(nread, string)
 //
 LUA_API int wrap_uv_read_start(lua_State *L) {
     uv_stream_t *stream;
@@ -172,7 +172,7 @@ static void wrap_uv_on_listen(uv_stream_t *server, int status) {
     }
 }
 
-// params: stream, backlog, callback(status)
+// params: stream, listenBacklogCount, listenCallback(status)
 //
 LUA_API int wrap_uv_listen(lua_State *L) {
     uv_stream_t *stream;
@@ -191,8 +191,8 @@ LUA_API int wrap_uv_listen(lua_State *L) {
     return 1;
 }
 
-// As part of cleanup of a stream, de-link the reference from C to
-// the lua callback closure.  Any fired callbacks after cleanup()
+// As part of this stream cleanup function, de-link the reference from
+// C to the lua callback closure.  Any fired callbacks after cleanup()
 // will become no-op, and lua can also GC appropriately.
 //
 // params: stream
@@ -234,7 +234,8 @@ static void on_work_after(uv_work_t *wr) {
     free(wr);
 }
 
-// The API for uv_queue_work is simpler because lua has closures.
+// The wrapped lua API for uv_queue_work() is simpler than
+// the C API because lua has closures to handle user data.
 //
 // params: loop, callback()
 //
