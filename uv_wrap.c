@@ -156,7 +156,6 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
     if (stream->data != NULL) {
         unref(stream->data);
     }
-
     stream->data = ref_function(L, 2);
 
     int res = uv_read_start(stream, wrap_uv_on_alloc, wrap_uv_on_read);
@@ -186,11 +185,11 @@ LUA_API int wrap_uv_listen(lua_State *L) {
         luaL_checkudata(L, 1, "uv_wrap.uv_stream_t_ptr");
     stream = *stream_p;
 
-    luaL_argcheck(L, stream->data == NULL, 1,
-                  "stream->data is not NULL in wrap_uv_listen");
-
     int backlog = (int) luaL_checkint(L, 2);
 
+    if (stream->data != NULL) {
+        unref(stream->data);
+    }
     stream->data = ref_function(L, 3);
 
     int res = uv_listen(stream, backlog, wrap_uv_on_listen);
