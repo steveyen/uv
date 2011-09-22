@@ -3,7 +3,7 @@
 l = require('uv_wrap')
 assert(l and l.UV_OK)
 
-port = 11700
+port = tonumber(arg[1]) or 11700
 addr = assert(l.uv_ip4_addr("0.0.0.0", port))
 loop = assert(l.uv_default_loop())
 
