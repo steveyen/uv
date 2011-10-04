@@ -1,5 +1,7 @@
 #!/usr/bin/env luajit
 
+local sbyte = string.byte
+
 l = require('uv_wrap')
 assert(l and l.UV_OK)
 
@@ -31,9 +33,13 @@ function on_listen(status)
   function on_read(nread, s)
     if nread > 0 then
       -- print("on_read " .. nread .. ": " .. s)
+      for i = 1, #s do
+        if sbyte(s, i) == 13 then -- '\r'
+          luv_write(client_stream, vstr, on_write)
+        end
+      end
     else
       -- print("on_read " .. nread)
-      luv_write(client_stream, vstr, on_write)
     end
   end
 

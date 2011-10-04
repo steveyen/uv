@@ -20,9 +20,10 @@ typedef struct  {
 } lua_ref_t;
 
 static void unref(lua_ref_t *ref) {
-    assert(ref && ref->L);
-    luaL_unref(ref->L, LUA_REGISTRYINDEX, ref->ref);
-    free(ref);
+    if (ref && ref->L) {
+        luaL_unref(ref->L, LUA_REGISTRYINDEX, ref->ref);
+        free(ref);
+    }
 }
 
 static lua_ref_t *ref(lua_State *L) { // Grabs stack's top item.
@@ -149,9 +150,6 @@ LUA_API int wrap_uv_read_start(lua_State *L) {
     uv_stream_t **stream_p = luaL_checkudata(L, 1, "uv_stream_t_ptr");
     stream = *stream_p;
 
-    if (stream->data != NULL) {
-        unref(stream->data);
-    }
     stream->data = ref_function(L, 2);
 
     int res = uv_read_start(stream, wrap_uv_on_alloc, wrap_uv_on_read);
