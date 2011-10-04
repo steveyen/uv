@@ -3,6 +3,8 @@
 l = require('uv_wrap')
 assert(l and l.UV_OK)
 
+luv_write = l.uv_write
+
 port = tonumber(arg[1]) or 11700
 addr = assert(l.uv_ip4_addr("0.0.0.0", port))
 loop = assert(l.uv_default_loop())
@@ -31,7 +33,7 @@ function on_listen(status)
       -- print("on_read " .. nread .. ": " .. s)
     else
       -- print("on_read " .. nread)
-      l.uv_write(client_stream, vstr, on_write)
+      luv_write(client_stream, vstr, on_write)
     end
   end
 
