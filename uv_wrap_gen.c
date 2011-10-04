@@ -224,6 +224,16 @@ int wrap_uv_exepath(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
+int wrap_uv_freeaddrinfo(lua_State *L) {
+    struct addrinfo * ai;
+    struct addrinfo * *ai_p =
+        luaL_checkudata(L, 1, "addrinfo_ptr");
+    ai = *ai_p;
+    printf("  wrap_uv_freeaddrinfo.ai: %p\n", ai);
+
+    uv_freeaddrinfo(ai);
+    return 0;
+}
 int wrap_uv_fs_chmod(lua_State *L) {
     uv_loop_t * loop;
     uv_loop_t * *loop_p =
@@ -310,6 +320,32 @@ int wrap_uv_fs_close(lua_State *L) {
 
     int res = (int)
         uv_fs_close(loop, req, file, cb);
+    lua_pushinteger(L, res);
+    return 1;
+}
+int wrap_uv_fs_event_init(lua_State *L) {
+    uv_loop_t * loop;
+    uv_loop_t * *loop_p =
+        luaL_checkudata(L, 1, "uv_loop_t_ptr");
+    loop = *loop_p;
+    printf("  wrap_uv_fs_event_init.loop: %p\n", loop);
+
+    uv_fs_event_t * handle;
+    uv_fs_event_t * *handle_p =
+        luaL_checkudata(L, 2, "uv_fs_event_t_ptr");
+    handle = *handle_p;
+    printf("  wrap_uv_fs_event_init.handle: %p\n", handle);
+
+    char * filename;
+    filename = (char *) luaL_checkstring(L, 3);
+
+    uv_fs_event_cb cb;
+    uv_fs_event_cb *cb_p =
+        luaL_checkudata(L, 4, "uv_fs_event_cb");
+    cb = *cb_p;
+
+    int res = (int)
+        uv_fs_event_init(loop, handle, filename, cb);
     lua_pushinteger(L, res);
     return 1;
 }
@@ -1041,6 +1077,17 @@ int wrap_uv_getaddrinfo(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
+int wrap_uv_guess_handle(lua_State *L) {
+    uv_file file;
+    uv_file *file_p =
+        luaL_checkudata(L, 1, "uv_file");
+    file = *file_p;
+
+    uv_handle_type res = (uv_handle_type)
+        uv_guess_handle(file);
+    lua_pushinteger(L, res);
+    return 1;
+}
 int wrap_uv_hrtime(lua_State *L) {
     uint64_t res = (uint64_t)
         uv_hrtime();
@@ -1187,17 +1234,6 @@ int wrap_uv_is_active(lua_State *L) {
 
     int res = (int)
         uv_is_active(handle);
-    lua_pushinteger(L, res);
-    return 1;
-}
-int wrap_uv_is_tty(lua_State *L) {
-    uv_file file;
-    uv_file *file_p =
-        luaL_checkudata(L, 1, "uv_file");
-    file = *file_p;
-
-    int res = (int)
-        uv_is_tty(file);
     lua_pushinteger(L, res);
     return 1;
 }
@@ -1755,6 +1791,30 @@ int wrap_uv_timer_stop(lua_State *L) {
     lua_pushinteger(L, res);
     return 1;
 }
+int wrap_uv_tty_get_winsize(lua_State *L) {
+    uv_tty_t * arg_0;
+    uv_tty_t * *arg_0_p =
+        luaL_checkudata(L, 1, "uv_tty_t_ptr");
+    arg_0 = *arg_0_p;
+    printf("  wrap_uv_tty_get_winsize.arg_0: %p\n", arg_0);
+
+    int * width;
+    int * *width_p =
+        luaL_checkudata(L, 2, "int_ptr");
+    width = *width_p;
+    printf("  wrap_uv_tty_get_winsize.width: %p\n", width);
+
+    int * height;
+    int * *height_p =
+        luaL_checkudata(L, 3, "int_ptr");
+    height = *height_p;
+    printf("  wrap_uv_tty_get_winsize.height: %p\n", height);
+
+    int res = (int)
+        uv_tty_get_winsize(arg_0, width, height);
+    lua_pushinteger(L, res);
+    return 1;
+}
 int wrap_uv_tty_init(lua_State *L) {
     uv_loop_t * arg_0;
     uv_loop_t * *arg_0_p =
@@ -1777,6 +1837,10 @@ int wrap_uv_tty_init(lua_State *L) {
         uv_tty_init(arg_0, arg_1, fd);
     lua_pushinteger(L, res);
     return 1;
+}
+int wrap_uv_tty_reset_mode(lua_State *L) {
+    uv_tty_reset_mode();
+    return 0;
 }
 int wrap_uv_tty_set_mode(lua_State *L) {
     uv_tty_t * arg_0;
@@ -2151,9 +2215,11 @@ int wrap_uv_close(lua_State *L);
 int wrap_uv_default_loop(lua_State *L);
 int wrap_uv_err_name(lua_State *L);
 int wrap_uv_exepath(lua_State *L);
+int wrap_uv_freeaddrinfo(lua_State *L);
 int wrap_uv_fs_chmod(lua_State *L);
 int wrap_uv_fs_chown(lua_State *L);
 int wrap_uv_fs_close(lua_State *L);
+int wrap_uv_fs_event_init(lua_State *L);
 int wrap_uv_fs_fchmod(lua_State *L);
 int wrap_uv_fs_fchown(lua_State *L);
 int wrap_uv_fs_fdatasync(lua_State *L);
@@ -2178,6 +2244,7 @@ int wrap_uv_fs_unlink(lua_State *L);
 int wrap_uv_fs_utime(lua_State *L);
 int wrap_uv_fs_write(lua_State *L);
 int wrap_uv_getaddrinfo(lua_State *L);
+int wrap_uv_guess_handle(lua_State *L);
 int wrap_uv_hrtime(lua_State *L);
 int wrap_uv_idle_init(lua_State *L);
 int wrap_uv_idle_start(lua_State *L);
@@ -2187,7 +2254,6 @@ int wrap_uv_ip4_name(lua_State *L);
 int wrap_uv_ip6_addr(lua_State *L);
 int wrap_uv_ip6_name(lua_State *L);
 int wrap_uv_is_active(lua_State *L);
-int wrap_uv_is_tty(lua_State *L);
 int wrap_uv_last_error(lua_State *L);
 int wrap_uv_listen(lua_State *L);
 int wrap_uv_loop_delete(lua_State *L);
@@ -2223,7 +2289,9 @@ int wrap_uv_timer_init(lua_State *L);
 int wrap_uv_timer_set_repeat(lua_State *L);
 int wrap_uv_timer_start(lua_State *L);
 int wrap_uv_timer_stop(lua_State *L);
+int wrap_uv_tty_get_winsize(lua_State *L);
 int wrap_uv_tty_init(lua_State *L);
+int wrap_uv_tty_reset_mode(lua_State *L);
 int wrap_uv_tty_set_mode(lua_State *L);
 int wrap_uv_udp_bind(lua_State *L);
 int wrap_uv_udp_bind6(lua_State *L);
@@ -2263,9 +2331,11 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_default_loop", wrap_uv_default_loop},
         {"uv_err_name", wrap_uv_err_name},
         {"uv_exepath", wrap_uv_exepath},
+        {"uv_freeaddrinfo", wrap_uv_freeaddrinfo},
         {"uv_fs_chmod", wrap_uv_fs_chmod},
         {"uv_fs_chown", wrap_uv_fs_chown},
         {"uv_fs_close", wrap_uv_fs_close},
+        {"uv_fs_event_init", wrap_uv_fs_event_init},
         {"uv_fs_fchmod", wrap_uv_fs_fchmod},
         {"uv_fs_fchown", wrap_uv_fs_fchown},
         {"uv_fs_fdatasync", wrap_uv_fs_fdatasync},
@@ -2290,6 +2360,7 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_fs_utime", wrap_uv_fs_utime},
         {"uv_fs_write", wrap_uv_fs_write},
         {"uv_getaddrinfo", wrap_uv_getaddrinfo},
+        {"uv_guess_handle", wrap_uv_guess_handle},
         {"uv_hrtime", wrap_uv_hrtime},
         {"uv_idle_init", wrap_uv_idle_init},
         {"uv_idle_start", wrap_uv_idle_start},
@@ -2299,7 +2370,6 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_ip6_addr", wrap_uv_ip6_addr},
         {"uv_ip6_name", wrap_uv_ip6_name},
         {"uv_is_active", wrap_uv_is_active},
-        {"uv_is_tty", wrap_uv_is_tty},
         {"uv_last_error", wrap_uv_last_error},
         {"uv_listen", wrap_uv_listen},
         {"uv_loop_delete", wrap_uv_loop_delete},
@@ -2335,7 +2405,9 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
         {"uv_timer_set_repeat", wrap_uv_timer_set_repeat},
         {"uv_timer_start", wrap_uv_timer_start},
         {"uv_timer_stop", wrap_uv_timer_stop},
+        {"uv_tty_get_winsize", wrap_uv_tty_get_winsize},
         {"uv_tty_init", wrap_uv_tty_init},
+        {"uv_tty_reset_mode", wrap_uv_tty_reset_mode},
         {"uv_tty_set_mode", wrap_uv_tty_set_mode},
         {"uv_udp_bind", wrap_uv_udp_bind},
         {"uv_udp_bind6", wrap_uv_udp_bind6},
@@ -2485,6 +2557,12 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
     lua_pushinteger(L, (lua_Integer) UV_EEXIST);
     lua_setfield(L, -2, "UV_EEXIST");
 
+    lua_pushinteger(L, (lua_Integer) UV_RENAME);
+    lua_setfield(L, -2, "UV_RENAME");
+
+    lua_pushinteger(L, (lua_Integer) UV_CHANGE);
+    lua_setfield(L, -2, "UV_CHANGE");
+
     lua_pushinteger(L, (lua_Integer) UV_FS_UNKNOWN);
     lua_setfield(L, -2, "UV_FS_UNKNOWN");
 
@@ -2607,6 +2685,9 @@ LUA_API int luaopen_uv_wrap(lua_State *L) {
 
     lua_pushinteger(L, (lua_Integer) UV_PROCESS);
     lua_setfield(L, -2, "UV_PROCESS");
+
+    lua_pushinteger(L, (lua_Integer) UV_FS_EVENT);
+    lua_setfield(L, -2, "UV_FS_EVENT");
 
     lua_pushinteger(L, (lua_Integer) UV_UNKNOWN_REQ);
     lua_setfield(L, -2, "UV_UNKNOWN_REQ");
