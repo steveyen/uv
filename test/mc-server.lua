@@ -26,7 +26,7 @@ function on_listen(status)
     -- print("on_write " .. status)
   end
 
-  local vstr = "VALUE a 0 1\r\nA\r\nEND\r\n"
+  local vstr = "END\r\n"
 
   function on_read(nread, s)
     if nread > 0 then
