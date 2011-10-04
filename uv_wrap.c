@@ -26,7 +26,7 @@ static void unref(lua_ref_t *ref) {
 }
 
 static lua_ref_t *ref(lua_State *L) { // Grabs stack's top item.
-    lua_ref_t *ref = calloc(1, sizeof(*ref));
+    lua_ref_t *ref = malloc(sizeof(*ref));
     if (ref != NULL) {
         ref->L = L;
         ref->ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -90,7 +90,7 @@ LUA_API int wrap_uv_write(lua_State *L) {
         return 1;
     }
 
-    write_req_t *wr = calloc(1, sizeof(*wr));
+    write_req_t *wr = malloc(sizeof(*wr));
     if (wr != NULL) {
         lua_pushvalue(L, 2);
         wr->ref_buf = ref(L);
