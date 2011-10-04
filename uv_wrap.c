@@ -57,21 +57,22 @@ static lua_ref_t *ref_function(lua_State *L, int index) {
 typedef struct {
     uv_write_t req;
     uv_buf_t   buf;
-    lua_ref_t *cb;
+    lua_ref_t *ref_buf;
+    lua_ref_t *ref_cb;
 } write_req_t;
 
 static void wrap_uv_on_write(uv_write_t *req, int status) {
     write_req_t *wr = (write_req_t *) req;
-    assert(wr && wr->cb && wr->cb->L);
-    lua_rawgeti(wr->cb->L, LUA_REGISTRYINDEX, wr->cb->ref);
-    lua_pushnumber(wr->cb->L, status);
-    if (lua_pcall(wr->cb->L, 1, 0, 0) != 0) {
+    assert(wr && wr->ref_cb && wr->ref_cb->L);
+    lua_rawgeti(wr->ref_cb->L, LUA_REGISTRYINDEX, wr->ref_cb->ref);
+    lua_pushnumber(wr->ref_cb->L, status);
+    if (lua_pcall(wr->ref_cb->L, 1, 0, 0) != 0) {
         printf("wrap_uv_on_write pcall error: %s\n",
-               lua_tostring(wr->cb->L, -1));
+               lua_tostring(wr->ref_cb->L, -1));
     }
 
-    unref(wr->cb);
-    free(wr->buf.base);
+    unref(wr->ref_buf);
+    unref(wr->ref_cb);
     free(wr);
 }
 
@@ -83,21 +84,19 @@ LUA_API int wrap_uv_write(lua_State *L) {
     stream = *stream_p;
 
     size_t slen = 0;
-    const char *s = luaL_checklstring(L, 2, &slen);
+    char *s = (char *) luaL_checklstring(L, 2, &slen);
     if (s == NULL || slen <= 0) {
         lua_pushinteger(L, 0);
         return 1;
     }
 
-    char *sb = malloc(slen + 1);
-    if (sb != NULL) {
-        memcpy(sb, s, slen);
-        sb[slen] = '\0';
-
-        write_req_t *wr = calloc(1, sizeof(*wr));
-        if (wr != NULL) {
-            wr->buf = uv_buf_init(sb, slen);
-            wr->cb = ref_function(L, 3);
+    write_req_t *wr = calloc(1, sizeof(*wr));
+    if (wr != NULL) {
+        lua_pushvalue(L, 2);
+        wr->ref_buf = ref(L);
+        wr->ref_cb = ref_function(L, 3);
+        if (wr->ref_buf && wr->ref_cb) {
+            wr->buf = uv_buf_init(s, slen);
 
             int res = uv_write(&wr->req, stream, &wr->buf, 1,
                                wrap_uv_on_write);
@@ -105,7 +104,9 @@ LUA_API int wrap_uv_write(lua_State *L) {
             return 1;
         }
 
-        free(sb);
+        unref(wr->ref_buf);
+        unref(wr->ref_cb);
+        free(wr);
     }
 
     luaL_error(L, "wrap_uv_write malloc failed");
